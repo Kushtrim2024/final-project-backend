@@ -1,0 +1,17 @@
+### register
+POST http://localhost:5517/auth/register
+Content-Type: application/json
+
+{
+    "email": "example@mail.com",
+    "password": "LoginPW123!"
+}
+
+### login
+POST http://localhost:5517/auth/login
+Content-Type: application/json
+
+{
+    "email": "example@mail.com",
+    "password": "LoginPW123!"
+}
