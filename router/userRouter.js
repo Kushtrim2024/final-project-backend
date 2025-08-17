@@ -1,8 +1,14 @@
-import ex from "express";
-import { loginController, registerController } from "../controller/userController.js";
+import express from "express";
+import { profile, registerUser, loginUser, updateUserProfile, deleteUserAccount} from "../controller/userController.js";
+import { authMiddleware } from "../middleware/authMiddleware.js";
 
+const router = express.Router();
 
-export const userRouter = ex.Router();
+// Jeder eingeloggte User (egal welche Rolle)
+router.get("/profile", authMiddleware(), profile);
+router.post("/register", registerUser);
+router.post("/login", loginUser);
+router.put("/profile/update", authMiddleware(), updateUserProfile);
+router.delete("/profile/delete", authMiddleware(), deleteUserAccount);
 
-userRouter.post("/register", registerController);
-userRouter.post("/login", loginController);
+export default router;

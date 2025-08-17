@@ -1,17 +1,61 @@
-### register
-POST http://localhost:5517/auth/register
+### User register
+POST http://localhost:5517/user/register
+Content-Type: application/json 
+
+{
+    "name": "Test User",
+    "email": "test2@gmail.com",
+    "password": "TestPW123!",
+    "passwordConfirm": "TestPW123!",
+    "phone": "+491234567890",
+    "address": "Example Street 123, 12345 Example City",
+    "role": "user"    
+}
+
+### User login
+POST http://localhost:5517/user/login
 Content-Type: application/json
 
 {
-    "email": "example@mail.com",
-    "password": "LoginPW123!"
+    "email": "test2@gmail.com",
+    "password": "TestPW123!"
 }
 
-### login
-POST http://localhost:5517/auth/login
+### Get User
+GET http://localhost:5517/user/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTFkYWZkYjQwMWIyNTlmMDhhMzZlOCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NDM3ODQyLCJleHAiOjE3NTU0NDE0NDJ9._26mYlTosSthZS8i6S0csYj6rieDxATnLBGubc-L6P8
+
+
+### Restaurant Besitzer register
+POST http://localhost:5517/restaurant/register
 Content-Type: application/json
 
 {
-    "email": "example@mail.com",
-    "password": "LoginPW123!"
+ "name":"restaurant owner 3",
+ "email": "owner3@gmail.com",
+ "password": "TestPW123!",
+ "passwordConfirm": "TestPW123!",
+ "phone": "+491234567890",
+ "address": "Example Street 123, 12345 Example City",
+ "role": "restaurant",
+ "restaurantName": "Example Restaurant3",
+ "taxNumber": "123456789",
+ "document": "example-document3.pdf", 
+ "website": "https://example-restaurant3.com"
 }
+
+### Restaurant Besitzer login
+
+POST http://localhost:5517/restaurant/login
+Content-Type: application/json
+
+{
+  "email": "owner3@gmail.com",
+  "password": "TestPW123!"
+}
+
+### get Restaurant Besitzer
+GET http://localhost:5517/restaurant/getRestaurantOwner
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTFkMjU5ZjI2MmU2OThiZTEyOGIxNCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NDM2NjcxLCJleHAiOjE3NTU0NDAyNzF9.CpFTlZBY2PDPWeQitCMUJJgNl8iCZBenuHibd3ig5o8
+
+

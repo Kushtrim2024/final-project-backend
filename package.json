@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "start": "node --env-file .env app.js",
-    "dev": "nodemon --env-file .env app.js"
+    "dev": "nodemon --env-file .env app.js",
+    "seed": "node --env-file .env script/seed.js"
   },
   "keywords": [],
   "author": "Kushtrim",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@faker-js/faker": "^9.9.0",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

@@ -2,102 +2,72 @@ import mongoose from "mongoose";
 
 const RestaurantSchema = new mongoose.Schema(
   {
-    // Basis-Infos
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    description: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    restaurantName: { type: String, required: true },
+    description: { type: String, trim: true },
+
     address: {
-      type: String,
-      required: true,
-      trim: true,
+      street: { type: String, required: true },
+      city: { type: String, required: true },
+      postalCode: { type: String, required: true },
+      country: { type: String, required: true },
     },
-    phone: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      trim: true,
-    },
+
+    phone: { type: String, required: true },
+    email: { type: String, required: true, lowercase: true, trim: true },
+
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "restaurant",
       required: true,
     },
 
-    // Medien & Darstellung
-    image: {
-      type: String, // URL oder Pfad
-      required: true,
-    },
-    gallery: {
-      type: [String], // mehrere Bilder
-      default: [],
+    image: { type: String, trim: true },
+    logo: { type: String, trim: true },
+    gallery: [String],
+
+    hours: {
+      monday: {
+        open: { type: String, default: "Closed" },
+        close: { type: String, default: "Closed" },
+      },
+      tuesday: {
+        open: { type: String, default: "Closed" },
+        close: { type: String, default: "Closed" },
+      },
+      wednesday: {
+        open: { type: String, default: "Closed" },
+        close: { type: String, default: "Closed" },
+      },
+      thursday: {
+        open: { type: String, default: "Closed" },
+        close: { type: String, default: "Closed" },
+      },
+      friday: {
+        open: { type: String, default: "Closed" },
+        close: { type: String, default: "Closed" },
+      },
+      saturday: {
+        open: { type: String, default: "Closed" },
+        close: { type: String, default: "Closed" },
+      },
+      sunday: {
+        open: { type: String, default: "Closed" },
+        close: { type: String, default: "Closed" },
+      },
     },
 
-    // Öffnungszeiten
-    openingHours: {
-      type: String, // z.B. "10:00"
-      required: true,
-    },
-    closingHours: {
-      type: String, // z.B. "22:00"
-      required: true,
-    },
-    isOpen: {
-      type: Boolean,
-      default: true,
-    },
+    deliveryAvailable: { type: Boolean, default: false },
+    takeawayAvailable: { type: Boolean, default: false },
+    minOrderAmount: { type: Number, default: 0 },
 
-    // Serviceoptionen
-    deliveryAvailable: {
-      type: Boolean,
-      default: false,
-    },
-    takeawayAvailable: {
-      type: Boolean,
-      default: false,
-    },
-    minOrderAmount: {
-      type: Number,
-      default: 0,
-    },
+    categories: [String],
+    tags: [String],
 
-    // Kategorien & Tags
-    categories: {
-      type: [String],
-      default: [],
-    },
-    tags: {
-      type: [String], // z.B. ["vegan", "bio"]
-      default: [],
-    },
-
-    // Standortdaten
     location: {
-      type: {
-        type: String,
-        enum: ["Point"],
-        default: "Point",
-      },
-      coordinates: {
-        type: [Number], // [longitude, latitude]
-        default: [0, 0],
-      },
+      type: { type: String, enum: ["Point"], default: "Point" },
+      coordinates: { type: [Number], default: [0, 0] },
     },
 
-    // Bewertungen
     ratings: [
       {
         userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
@@ -107,9 +77,7 @@ const RestaurantSchema = new mongoose.Schema(
       },
     ],
 
-    // Social Media & Web
     socialLinks: {
-      website: String,
       facebook: String,
       instagram: String,
     },
@@ -117,7 +85,6 @@ const RestaurantSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Geospatial Index für Standortsuche
 RestaurantSchema.index({ location: "2dsphere" });
 
 export default mongoose.model("Restaurant", RestaurantSchema);
