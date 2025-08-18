@@ -46,11 +46,12 @@ export const registerRestaurantOwner = async (req, res) => {
         id: owner._id,
         name: owner.name,
         email: owner.email,
-        role: owner.role,
+        address: owner.address,
         restaurantName: owner.restaurantName,
         taxNumber: owner.taxNumber,
         document: owner.document,
         website: owner.website,
+        role: owner.role,
         
       }
     });
@@ -137,6 +138,34 @@ export const updateRestaurantOwnerProfile = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };  
+
+//Aktualisieren des Passworts für Restaurantbesitzer
+export const updateRestaurantOwnerPassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword, confirmNewPassword } = req.body;
+
+    if (newPassword !== confirmNewPassword) {
+      return res.status(400).json({ message: "New passwords do not match" });
+    }
+
+    const owner = await RestaurantOwner.findById(req.user._id);
+    if (!owner) return res.status(404).json({ message: "Restaurant owner not found" });
+
+    const isMatch = await bcrypt.compare(currentPassword, owner.password);
+    if (!isMatch) return res.status(401).json({ message: "Current password is incorrect" });
+
+    owner.password = await bcrypt.hash(newPassword, 10);
+    await owner.save();
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
+// Löschen des Restaurantbesitzer-Kontos
+
 export const deleteRestaurantOwnerAccount = async (req, res) => {
   try {
     const deletedOwner = await RestaurantOwner.findByIdAndDelete(req.user._id);

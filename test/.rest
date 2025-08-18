@@ -1,14 +1,22 @@
+###------------------------------------------------------
+### User CRUD operations
+###------------------------------------------------------
 ### User register
 POST http://localhost:5517/user/register
 Content-Type: application/json 
 
 {
-    "name": "Test User",
-    "email": "test2@gmail.com",
+    "name": "User3",
+    "email": "user3@gmail.com",
     "password": "TestPW123!",
     "passwordConfirm": "TestPW123!",
     "phone": "+491234567890",
-    "address": "Example Street 123, 12345 Example City",
+    "address": {
+    "street": "Musterstraße 3",
+    "city": "Berlin",
+    "postalCode": "10115",
+    "country": "Deutschland"
+  },
     "role": "user"    
 }
 
@@ -17,31 +25,69 @@ POST http://localhost:5517/user/login
 Content-Type: application/json
 
 {
-    "email": "test2@gmail.com",
-    "password": "TestPW123!"
+    "email": "user3@gmail.com",
+    "password": "NewTestPW123!"
 }
 
 ### Get User
 GET http://localhost:5517/user/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTFkYWZkYjQwMWIyNTlmMDhhMzZlOCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NDM3ODQyLCJleHAiOjE3NTU0NDE0NDJ9._26mYlTosSthZS8i6S0csYj6rieDxATnLBGubc-L6P8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyMjZhNmY3MWM0OTA5OTFmNzUyOCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NTIxNjQ5LCJleHAiOjE3NTU1MjUyNDl9.aX6HflIKYKIOEN-wmJTgssp7Ic7Da8h7aEXGulp7n4M
+
+### User update
+PUT http://localhost:5517/user/profile/update
+Content-Type: application/json 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyMjZhNmY3MWM0OTA5OTFmNzUyOCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NTIxNjQ5LCJleHAiOjE3NTU1MjUyNDl9.aX6HflIKYKIOEN-wmJTgssp7Ic7Da8h7aEXGulp7n4M
+
+{
+    "name": "User3 Updated",
+    "email": "user3@gmail.com",
+    "phone": "+491234567890",
+    "address": {
+    "street": "Musterstraße 3",
+    "city": "Ludwigsburg",
+    "postalCode": "71638",
+    "country": "Deutschland"
+  }
+}
+
+### User update password
+PUT http://localhost:5517/user/profile/update-password
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyMjZhNmY3MWM0OTA5OTFmNzUyOCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NTIxNjQ5LCJleHAiOjE3NTU1MjUyNDl9.aX6HflIKYKIOEN-wmJTgssp7Ic7Da8h7aEXGulp7n4M
+
+{
+    "currentPassword": "TestPW123!",
+    "newPassword": "NewTestPW123!",
+    "confirmNewPassword": "NewTestPW123!" 
+}
+### User delete
+DELETE http://localhost:5517/user/profile/delete
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTJkODE1N2Q3OTE2ZDEyYjQ2YTEwZSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NTEwMDY4LCJleHAiOjE3NTU1MTM2Njh9.qI5fnfQY75FARMgWf-oEMZV-aQCjFtSZXBGeLrdWz_I 
 
 
+
+###------------------------------------------------------
+### Restaurant Besitzer CRUD operations
+###------------------------------------------------------
 ### Restaurant Besitzer register
 POST http://localhost:5517/restaurant/register
 Content-Type: application/json
 
 {
- "name":"restaurant owner 3",
- "email": "owner3@gmail.com",
- "password": "TestPW123!",
- "passwordConfirm": "TestPW123!",
- "phone": "+491234567890",
- "address": "Example Street 123, 12345 Example City",
- "role": "restaurant",
- "restaurantName": "Example Restaurant3",
- "taxNumber": "123456789",
- "document": "example-document3.pdf", 
- "website": "https://example-restaurant3.com"
+  "name": "Max Mustermann",
+  "email": "maxmu@restaurant.com",
+  "password": "TestPW123!",
+  "phone": "+491234567890",
+  "address": {
+    "street": "Musterstraße 1",
+    "city": "Berlin",
+    "postalCode": "10115",
+    "country": "Deutschland"
+  },
+  "restaurantName": "Max's Diner",
+  "taxNumber": "123456789",
+  "document": "dokument.pdf",
+  "website": "https://maxsdiner.de"
 }
 
 ### Restaurant Besitzer login
@@ -50,12 +96,142 @@ POST http://localhost:5517/restaurant/login
 Content-Type: application/json
 
 {
-  "email": "owner3@gmail.com",
-  "password": "TestPW123!"
+  "email": "maxmus@restaurant.com",
+  "password": "NewTestPW123!"
 }
 
 ### get Restaurant Besitzer
-GET http://localhost:5517/restaurant/getRestaurantOwner
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTFkMjU5ZjI2MmU2OThiZTEyOGIxNCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NDM2NjcxLCJleHAiOjE3NTU0NDAyNzF9.CpFTlZBY2PDPWeQitCMUJJgNl8iCZBenuHibd3ig5o8
+GET http://localhost:5517/restaurant/getRestaurantOwnerProfile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyNjBmYzUzYWE5NTY1MzkyNWUyZCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTIyNTc1LCJleHAiOjE3NTU1MjYxNzV9._esUlPzTU74Ljn4uf72-TEFzLFtl6xyuem4RQ59B9Pk
 
 
+
+### update Restaurant Besitzer
+PUT http://localhost:5517/restaurant/profile/update
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyNjBmYzUzYWE5NTY1MzkyNWUyZCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTIyNTc1LCJleHAiOjE3NTU1MjYxNzV9._esUlPzTU74Ljn4uf72-TEFzLFtl6xyuem4RQ59B9Pk
+
+{
+  
+  "name": "Max Musterman updated",
+  "email": "maxmus@restaurant.com",
+  "phone": "+491234567890",
+  "address": {
+    "street": "Musterstraße 2",
+    "city": "Hamburg",
+    "postalCode": "10115",
+    "country": "Deutschland"
+  },
+  "restaurantName": "Max's Diner",
+  "taxNumber": "123456789",
+  "document": "dokument.pdf",
+  "website": "https://maxsdiner.de"
+
+}
+
+### Restaurant Besitzer update password
+PUT http://localhost:5517/restaurant/profile/update-password
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyNjBmYzUzYWE5NTY1MzkyNWUyZCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTIyODI3LCJleHAiOjE3NTU1MjY0Mjd9.PhVACTNnWJMfOcHENOVM6hkfe5210YNv6Yu1-0uMuBU
+
+{
+  "currentPassword": "NewTestPW123!",
+  "newPassword": "TestPW123!",
+  "confirmNewPassword": "TestPW123!"
+}
+
+### delete Restaurant Besitzer
+DELETE http://localhost:5517/restaurant/profile/delete
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyNjBmYzUzYWE5NTY1MzkyNWUyZCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTIyODI3LCJleHAiOjE3NTU1MjY0Mjd9.PhVACTNnWJMfOcHENOVM6hkfe5210YNv6Yu1-0uMuBU
+
+
+###------------------------------------------------------
+### Admin CRUD operations
+###------------------------------------------------------
+### Admin register
+POST http://localhost:5517/admin/register
+Content-Type: application/json
+
+{
+  "name": "Kushtrim",
+  "email": "kushtro20@gmail.com",
+  "password": "AdminPW123!",
+  "phone": "+491234567890",
+  "address": {
+    "street": "Agnes Miegel Straße 1",
+    "city": "Ludwigsburg",
+    "postalCode": "71642",
+    "country": "Deutschland"
+  },
+  "role": "admin"
+}
+
+### Admin login
+POST http://localhost:5517/admin/login
+Content-Type: application/json
+
+{
+  "email": "kushtro20@gmail.com",
+  "password": "AdminPW123!"
+}
+
+### Get Admin
+GET http://localhost:5517/admin
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyOTMzNWYxZTk2ZGQ1M2RiZjFjNCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTUyNjQzOSwiZXhwIjoxNzU1NTMwMDM5fQ.FVEAq2Nja-p_iJIIt4vQM6Ic3wqK4g4GBVQdD5WXxyA
+
+### Update Admin
+PUT http://localhost:5517/admin/profile/update
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyOTMzNWYxZTk2ZGQ1M2RiZjFjNCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTUyNjQzOSwiZXhwIjoxNzU1NTMwMDM5fQ.FVEAq2Nja-p_iJIIt4vQM6Ic3wqK4g4GBVQdD5WXxyA
+
+{
+  "name": "Kushtrim Bilali",
+  "email": "kushtro20@gmail.com",
+  "phone": "+491234567890",
+  "address": {
+    "street": "Agnes Miegel Straße 2",
+    "city": "Ludwigsburg",
+    "postalCode": "71642",
+    "country": "Deutschland"
+  }
+} 
+
+### Update Admin Password
+PUT http://localhost:5517/admin/profile/change-password
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyOTMzNWYxZTk2ZGQ1M2RiZjFjNCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTUyNjgyNywiZXhwIjoxNzU1NTMwNDI3fQ.aeXXqpc_E12awZy_SIGS7rewbGWFGM0B6XobIE_ZD8c
+
+{
+  "currentPassword": "NewAdminPW123!",
+  "newPassword": "AdminPW123!",
+  "confirmNewPassword": "AdminPW123!"
+} 
+
+### Delete Admin
+DELETE http://localhost:5517/admin/profile/68a329335f1e96dd53dbf1c4/delete
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyOTMzNWYxZTk2ZGQ1M2RiZjFjNCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTUyNjgyNywiZXhwIjoxNzU1NTMwNDI3fQ.aeXXqpc_E12awZy_SIGS7rewbGWFGM0B6XobIE_ZD8c
+
+### All Restaurant Owners
+GET http://localhost:5517/admin/restaurant-owners
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTUyNzg0MiwiZXhwIjoxNzU1NTMxNDQyfQ.TEAGJSGbFV8q6bADtWd0KWhkTdrZViDNUMdkfGcutSY
+
+### Get Restaurant Owner by ID
+GET http://localhost:5517/admin/restaurant-owners/68a30f6879baa0c0d0274ec0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTUyNzg0MiwiZXhwIjoxNzU1NTMxNDQyfQ.TEAGJSGbFV8q6bADtWd0KWhkTdrZViDNUMdkfGcutSY
+
+### Delete Restaurant Owner by ID
+DELETE http://localhost:5517/admin/restaurant-owners/68a30f6879baa0c0d0274ec0/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTUyNzg0MiwiZXhwIjoxNzU1NTMxNDQyfQ.TEAGJSGbFV8q6bADtWd0KWhkTdrZViDNUMdkfGcutSY
+
+### Get All Users
+GET http://localhost:5517/admin/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTUyODU3OSwiZXhwIjoxNzU1NTMyMTc5fQ.cBjNYgYYP0rnOFFmOmCbuvtQdJcsb6uS9RORw3EA5UQ
+
+### Get User by ID
+GET http://localhost:5517/admin/users/68a3226a6f71c490991f7528
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTUyODU3OSwiZXhwIjoxNzU1NTMyMTc5fQ.cBjNYgYYP0rnOFFmOmCbuvtQdJcsb6uS9RORw3EA5UQ
+
+### Delete User by ID
+DELETE http://localhost:5517/admin/users/68a3226a6f71c490991f7528
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTUyODU3OSwiZXhwIjoxNzU1NTMyMTc5fQ.cBjNYgYYP0rnOFFmOmCbuvtQdJcsb6uS9RORw3EA5UQ
+###------------------------------------------------------

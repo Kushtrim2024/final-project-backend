@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import admin from "../models/Admin.js";
+import RestaurantOwner from "../models/RestaurantOwner.js";
+import User from "../models/User.js";
 
 export const registerAdmin = async (req, res) => {
   try {
@@ -173,6 +175,84 @@ export const resetAdminPassword = async (req, res) => {
     const resetToken = jwt.sign({ id: adminUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
   } catch (error) {
     console.error("Error resetting password:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// All users
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Get user by ID
+export const getUserById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error fetching user by ID:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Delete user by ID
+export const deleteUser = async (req, res) => {
+  try {
+    const userId = req.params .id;
+    const deletedUser = await User.findByIdAndDelete(userId);
+    if (!deletedUser) return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+//All restaurant owners
+export const getAllRestaurantOwners = async (req, res) => {
+  try {
+    const restaurantOwners = await RestaurantOwner.find().select("-password");
+    res.status(200).json(restaurantOwners);
+  } catch (error) {
+    console.error("Error fetching restaurant owners:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Get restaurant owner by ID
+export const getRestaurantOwnerById = async (req, res) => {
+  try {
+    const ownerId = req.params.id;
+    const restaurantOwner = await RestaurantOwner.findById(ownerId).select("-password");
+    if (!restaurantOwner) return res.status(404).json({ message: "Restaurant owner not found" });
+
+    res.status(200).json(restaurantOwner);
+  } catch (error) {
+    console.error("Error fetching restaurant owner by ID:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};  
+
+// Delete restaurant owner by ID
+export const deleteRestaurantOwner = async (req, res) => {
+  try {
+    const ownerId = req.params.id;
+    const deletedOwner = await RestaurantOwner.findByIdAndDelete(ownerId);
+    if (!deletedOwner) return res.status(404).json({ message: "Restaurant owner not found" });
+
+    res.status(200).json({ message: "Restaurant owner deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting restaurant owner:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

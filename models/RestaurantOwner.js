@@ -5,7 +5,12 @@ const restaurantOwnerSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true, lowercase: true, trim: true },
   password: { type: String, required: true },
   phone: { type: String },
-  address: { type: String, required: true },
+  address: {
+      street: { type: String, required: true },
+      city: { type: String, required: true },
+      postalCode: { type: String, required: true },
+      country: { type: String, required: true },
+    },
   restaurantName: { type: String, required: true },
   taxNumber: { type: String, required: true },
   document: { type: String, required: true }, 

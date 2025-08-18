@@ -1,16 +1,21 @@
 import express from "express";
 // import { addMenuItem } from "../controller/restaurantController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
-import { deleteRestaurantOwnerAccount, getRestaurantOwnerProfile, loginRestaurantOwner, updateRestaurantOwnerProfile, registerRestaurantOwner } from "../controller/registerRestaurantOwner.js";
+import { deleteRestaurantOwnerAccount, getRestaurantOwnerProfile, loginRestaurantOwner, updateRestaurantOwnerProfile, registerRestaurantOwner, updateRestaurantOwnerPassword } from "../controller/registerRestaurantOwner.js";
+import Restaurant from "../models/Restaurant.js";
 
 const router = express.Router();
 
-// Nur Restaurantbesitzer
+// Auth (öffentlich)
 router.post("/register", registerRestaurantOwner);
 router.post("/login", loginRestaurantOwner);
-router.get("/getRestaurantOwner", authMiddleware(["restaurant"]), getRestaurantOwnerProfile);
-router.put("/profile/update", updateRestaurantOwnerProfile);
-router.delete("/profile/delete", deleteRestaurantOwnerAccount);
+
+// Profile (nur RestaurantOwner)
+router.get("/getRestaurantOwnerProfile", authMiddleware(["restaurant"]), getRestaurantOwnerProfile);
+router.put("/profile/update", authMiddleware(["restaurant"]), updateRestaurantOwnerProfile);
+router.put("/profile/update-password", authMiddleware(["restaurant"]),updateRestaurantOwnerPassword);
+router.delete("/profile/delete", authMiddleware(["restaurant"]), deleteRestaurantOwnerAccount);
+
 // router.post("/menu", authMiddleware(["restaurant"]), addMenuItem);
 
 export default router;

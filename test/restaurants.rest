@@ -1,0 +1,172 @@
+### Get all Restaurants
+GET http://localhost:5517/restaurants
+Content-Type: application/json
+
+### Get Restaurant by ID
+GET http://localhost:5517/restaurants/68a23988bb5b07bed06d81a4
+Content-Type: application/json
+
+###-------------------------------------------------------
+### Admins Restaurants verwalten
+###-------------------------------------------------------
+
+### Get all Restaurants (Admin)
+GET http://localhost:5517/admin/restaurants
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU0OTMxMywiZXhwIjoxNzU1NTUyOTEzfQ.ekJJTzQ8ODYpETWsSGo4qW8WLVNySyChAUM00v7f4WQ
+
+### Get Restaurant by ID (Admin)
+GET http://localhost:5517/admin/restaurants/68a23988bb5b07bed06d81a4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU0OTMxMywiZXhwIjoxNzU1NTUyOTEzfQ.ekJJTzQ8ODYpETWsSGo4qW8WLVNySyChAUM00v7f4WQ
+
+### Create Restaurant (Admin)
+POST http://localhost:5517/admin/restaurants
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU1MDc0OCwiZXhwIjoxNzU1NTU0MzQ4fQ.ZGdcnMoy0w0bp5RWWUILA8lN4uQmOic5ZWXUklyMnqI
+
+{
+  "restaurantName": "Test",
+  "description": "A cozy restaurant with a variety of dishes.",
+  "address": {
+    "street": "Lindenstraße 10",
+    "city": "Berlin",
+    "postalCode": "10115",
+    "country": "Deutschland"
+  },
+  "phone": "+491234567890",
+  "email": "test@gmail.com",
+  "ownerId": "68a23988bb5b07bed06d7d81",
+  "website": "https://example.com",
+  "image": "https://example.com/image.jpg"
+}
+
+### Update Restaurant (Admin)
+PUT http://localhost:5517/admin/restaurants/68a23988bb5b07bed06d81a4
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU0OTMxMywiZXhwIjoxNzU1NTUyOTEzfQ.ekJJTzQ8ODYpETWsSGo4qW8WLVNySyChAUM00v7f4WQ
+
+{
+  "name": "Lemke - Torphy",
+  "description": "Updated description of the restaurant.",
+  "address": {
+    "street": "Updated Street",
+    "city": "Updated City",
+    "postalCode": "12345",
+    "country": "Updated Country"
+  },
+  "phone": "+491234567890",
+  "email": "rylan13@yahoo.com",
+    "website": "https://updated-restaurant.com",
+    "image": "https://example.com/updated-image.jpg"
+}
+
+### Update Restaurant Details (Admin)
+PUT http://localhost:5517/admin/restaurants/68a23988bb5b07bed06d81a4/details
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU1MDc0OCwiZXhwIjoxNzU1NTU0MzQ4fQ.ZGdcnMoy0w0bp5RWWUILA8lN4uQmOic5ZWXUklyMnqI
+
+{
+  "hours": {
+    "monday": {
+      "open": "10:00",
+      "close": "22:00"
+    },
+    "tuesday": {
+      "open": "9:00",
+      "close": "23:00"
+    },
+    "wednesday": {
+      "open": "10:00",
+      "close": "18:00"
+    },
+    "thursday": {
+      "open": "8:00",
+      "close": "22:00"
+    },
+    "friday": {
+      "open": "09:00",
+      "close": "21:00"
+    },
+    "saturday": {
+      "open": "09:00",
+      "close": "23:00"
+    },
+    "sunday": {
+      "open": "10:00",
+      "close": "20:00"
+    }
+  }
+}
+
+### Delete Restaurant (Admin)
+DELETE http://localhost:5517/admin/restaurants/68a396ce23e90936368db084
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU1MDc0OCwiZXhwIjoxNzU1NTU0MzQ4fQ.ZGdcnMoy0w0bp5RWWUILA8lN4uQmOic5ZWXUklyMnqI
+
+###-------------------------------------------------------
+### Restaurant Besitzer CRUD operations
+###-------------------------------------------------------  
+### Get Restaurant Besitzer
+GET http://localhost:5517/owner/restaurants/my-restaurant
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTM5ODUxNGI5MDNkMGQ4MjBiZWY1ZCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTUxODI1LCJleHAiOjE3NTU1NTU0MjV9.9_96H571KBxASyszXbiOZNbaYyB5_GqjXKKH8T77gxI 
+
+### Update Restaurant Besitzer
+PUT http://localhost:5517/owner/restaurants/my-restaurant
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTM5ODUxNGI5MDNkMGQ4MjBiZWY1ZCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTUxODI1LCJleHAiOjE3NTU1NTU0MjV9.9_96H571KBxASyszXbiOZNbaYyB5_GqjXKKH8T77gxI 
+
+{
+  "restaurantName": "Max's Diner",
+  "description": "A cozy diner with a variety of dishes.",
+  "address": {
+    "street": "Lindenstraße 10",
+    "city": "Ulm",
+    "postalCode": "10115",
+    "country": "Deutschland"
+  },
+  "phone": "+491234567890",
+  "email": "musterman@gmail.com",
+    "website": "https://newexample.com",
+    "image": "https://example.com/new-image.jpg"
+}
+
+### Update Restaurant Besitzer Details
+PUT http://localhost:5517/owner/restaurants/my-restaurant/details
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTM5ODUxNGI5MDNkMGQ4MjBiZWY1ZCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTUxODI1LCJleHAiOjE3NTU1NTU0MjV9.9_96H571KBxASyszXbiOZNbaYyB5_GqjXKKH8T77gxI 
+
+{
+  "hours": {
+    "monday": {
+      "open": "10:00",
+      "close": "22:00"
+    },
+    "tuesday": {
+      "open": "9:00",
+      "close": "23:00"
+    },
+    "wednesday": {
+      "open": "10:00",
+      "close": "18:00"
+    },
+    "thursday": {
+      "open": "8:00",
+      "close": "22:00"
+    },
+    "friday": {
+      "open": "09:00",
+      "close": "21:00"
+    },
+    "saturday": {
+      "open": "09:00",
+      "close": "23:00"
+    },
+    "sunday": {
+      "open": "10:00",
+      "close": "20:00"
+    }
+  }
+}
+
+### Delete Restaurant Besitzer
+DELETE http://localhost:5517/owner/restaurants/my-restaurant
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTM5ODUxNGI5MDNkMGQ4MjBiZWY1ZCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTUxODI1LCJleHAiOjE3NTU1NTU0MjV9.9_96H571KBxASyszXbiOZNbaYyB5_GqjXKKH8T77gxI 
+    

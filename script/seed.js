@@ -12,7 +12,7 @@ function randomHours() {
   const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
   let hours = {};
   days.forEach(day => {
-    if (faker.datatype.boolean()) { // geschlossen zufällig
+    if (faker.datatype.boolean()) {
       hours[day] = { open: "Closed", close: "Closed" };
     } else {
       const openHour = faker.number.int({ min: 8, max: 12 });

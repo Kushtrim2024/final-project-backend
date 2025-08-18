@@ -1,7 +1,8 @@
 import express from "express";
 import { authMiddleware } from "../middleware/authMiddleware.js";
-import { adminDashboard, changeAdminPassword, deleteAdmin, getAdminById, getAllAdmins, registerAdmin, updateAdminProfile } from "../controller/adminController.js";
+import { adminDashboard, changeAdminPassword, deleteAdmin, getAdminById, getAllAdmins, loginAdmin, registerAdmin, updateAdminProfile } from "../controller/adminController.js";
 import Admin from "../models/Admin.js";
+
 
 const router = express.Router();
 
@@ -17,14 +18,14 @@ router.post("/register", async (req, res, next) => {
     return authMiddleware(["admin"])(req, res, () => registerAdmin(req, res));
   }
 });
-router.put("/profile/update", authMiddleware(["admin"]), updateAdminProfile);
-router.delete("/:id/delete", authMiddleware(["admin"]), deleteAdmin);
+router.post("/login", loginAdmin)
+
+// Admins können andere Admins verwalten
 router.get("/", authMiddleware(["admin"]), getAllAdmins);
-router.get("/:id", authMiddleware(["admin"]), getAdminById);
-router.put("/change-password", authMiddleware(["admin"]), changeAdminPassword);
-
-// Export the router
-
+router.get("/id/:id", authMiddleware(["admin"]), getAdminById);
+router.put("/profile/update", authMiddleware(["admin"]), updateAdminProfile);
+router.put("/profile/change-password", authMiddleware(["admin"]), changeAdminPassword);
+router.delete("/profile/:id/delete", authMiddleware(["admin"]), deleteAdmin);
 
 
 export default router;
