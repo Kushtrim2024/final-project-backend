@@ -21,11 +21,12 @@ const menuItemSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    basePrice: { type: Number, min: 0 },
     sizes: {
       type: [
         {
-          label: { type: String, required: true, trim: true },
-          price: { type: Number, required: true, min: 0 },
+          label: { type: String, trim: true },
+          price: { type: Number, min: 0 },
         },
       ],
       default: [],

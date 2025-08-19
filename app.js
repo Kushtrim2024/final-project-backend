@@ -35,7 +35,9 @@ app.use("/restaurant", restaurantOwnerRouter);
 app.use("/restaurants", restaurantPublicRouter);
 app.use("/admin/users", adminUserRouter);
 app.use("/admin/restaurant-owners", adminRestaurantOwnerRouter);
-app.use("/owner/restaurants", restaurantRouter);
+
+// MenuItem-Endpunkte verschachtelt unter Restaurants
+app.use("/owner/restaurants/:restaurantId/menu-items", menuRouter);
 app.use("/menus", menuRouter);
 app.use("/orders", orderRouter);
 app.get('/', (req, res) => res.send('Liefrik Backend läuft'));

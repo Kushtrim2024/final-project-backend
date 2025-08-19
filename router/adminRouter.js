@@ -1,6 +1,6 @@
 import express from "express";
 import { authMiddleware } from "../middleware/authMiddleware.js";
-import { adminDashboard, changeAdminPassword, deleteAdmin, getAdminById, getAllAdmins, loginAdmin, registerAdmin, updateAdminProfile } from "../controller/adminController.js";
+import { adminDashboard, changeAdminPassword, deleteAdmin, getAdminById, getAllAdmins, loginAdmin, registerAdmin, updateAdminProfile} from "../controller/adminController.js";
 import Admin from "../models/Admin.js";
 
 
@@ -26,6 +26,8 @@ router.get("/id/:id", authMiddleware(["admin"]), getAdminById);
 router.put("/profile/update", authMiddleware(["admin"]), updateAdminProfile);
 router.put("/profile/change-password", authMiddleware(["admin"]), changeAdminPassword);
 router.delete("/profile/:id/delete", authMiddleware(["admin"]), deleteAdmin);
+
+
 
 
 export default router;

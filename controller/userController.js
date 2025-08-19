@@ -4,7 +4,7 @@ import User from "../models/User.js";
 
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, password, phone, address } = req.body;
+    const { name, email, password, phone, address } = req.body; // address = erste Adresse
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({
@@ -12,11 +12,15 @@ export const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
       phone,
-      address,
-      role: "user", // Default role for regular users
+      addresses: address ? [address] : [], // erste Adresse ins Array packen
+      role: "user",
     });
 
-    const token = jwt.sign({ id: newUser._id, role: newUser.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(
+      { id: newUser._id, role: newUser.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
     res.status(201).json({ message: "User registered", token, user: newUser });
   } catch (error) {
@@ -59,10 +63,10 @@ export const profile = async (req, res) => {
 
 export const updateUserProfile = async (req, res) => {
   try {
-    const { name, email, phone, address } = req.body;
+    const { name, email, phone} = req.body;
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
-      { name, email, phone, address },
+      { name, email, phone},
       { new: true, runValidators: true }
     ).select("-password");
 
@@ -74,6 +78,54 @@ export const updateUserProfile = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// Neue Adresse hinzufügen
+
+export const addAddress = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.addresses.push(req.body); // neue Adresse hinten anhängen
+    await user.save();
+
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Defaultadresse holen
+export const getDefaultAddress = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const defaultAddress = user.addresses[0]; // immer erste Adresse
+    if (!defaultAddress) return res.status(404).json({ message: "No addresses found" });
+
+    res.status(200).json(defaultAddress);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Adresse entfernen
+export const removeAddress = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.addresses.id(req.params.addressId).deleteOne();
+    await user.save();
+
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
 // Passwort ändern
 export const updateUserPassword = async (req, res) => {
   try {

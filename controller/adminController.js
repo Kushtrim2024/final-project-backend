@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import admin from "../models/Admin.js";
 import RestaurantOwner from "../models/RestaurantOwner.js";
 import User from "../models/User.js";
+import Restaurant from "../models/Restaurant.js";
 
 export const registerAdmin = async (req, res) => {
   try {
@@ -254,5 +255,28 @@ export const deleteRestaurantOwner = async (req, res) => {
   } catch (error) {
     console.error("Error deleting restaurant owner:", error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Update restaurant status
+// This function allows an admin to change the status of a restaurant
+export const updateRestaurantStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!["active", "inactive"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    const restaurant = await Restaurant.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    if (!restaurant) return res.status(404).json({ message: "Restaurant not found" });
+
+    res.status(200).json({ message: "Status updated", restaurant });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

@@ -6,8 +6,8 @@ POST http://localhost:5517/user/register
 Content-Type: application/json 
 
 {
-    "name": "User3",
-    "email": "user3@gmail.com",
+    "name": "User2",
+    "email": "user2@gmail.com",
     "password": "TestPW123!",
     "passwordConfirm": "TestPW123!",
     "phone": "+491234567890",
@@ -25,35 +25,51 @@ POST http://localhost:5517/user/login
 Content-Type: application/json
 
 {
-    "email": "user3@gmail.com",
-    "password": "NewTestPW123!"
+    "email": "user2@gmail.com",
+    "password": "TestPW123!"
 }
 
 ### Get User
 GET http://localhost:5517/user/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyMjZhNmY3MWM0OTA5OTFmNzUyOCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NTIxNjQ5LCJleHAiOjE3NTU1MjUyNDl9.aX6HflIKYKIOEN-wmJTgssp7Ic7Da8h7aEXGulp7n4M
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzZTMyOWJmMzFmNzE4ZDcwNDg2OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NTk0MzEzLCJleHAiOjE3NTU1OTc5MTN9.xOGYJhC97EVLSIS_UGDLlh6KKxLvliUamP5ZqS3uTl4
+
 
 ### User update
 PUT http://localhost:5517/user/profile/update
 Content-Type: application/json 
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyMjZhNmY3MWM0OTA5OTFmNzUyOCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NTIxNjQ5LCJleHAiOjE3NTU1MjUyNDl9.aX6HflIKYKIOEN-wmJTgssp7Ic7Da8h7aEXGulp7n4M
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzZTMyOWJmMzFmNzE4ZDcwNDg2OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NTk0MzQ4LCJleHAiOjE3NTU1OTc5NDh9.Zo4oepukIeXN35TbzWmxhiB9xKySO21sHhsWzRcW3Ic
 
 {
-    "name": "User3 Updated",
-    "email": "user3@gmail.com",
-    "phone": "+491234567890",
-    "address": {
-    "street": "Musterstraße 3",
-    "city": "Ludwigsburg",
-    "postalCode": "71638",
-    "country": "Deutschland"
-  }
+    "name": "User2 updated",
+    "email": "user2@gmail.com",
+    "phone": "+491234567890"
+    
 }
+
+### User get default address
+GET http://localhost:5517/user/profile/addresses/default
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzZTMyOWJmMzFmNzE4ZDcwNDg2OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NTk0MzQ4LCJleHAiOjE3NTU1OTc5NDh9.Zo4oepukIeXN35TbzWmxhiB9xKySO21sHhsWzRcW3Ic
+
+### User add address
+POST http://localhost:5517/user/profile/addresses
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzZTMyOWJmMzFmNzE4ZDcwNDg2OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NTk0MzQ4LCJleHAiOjE3NTU1OTc5NDh9.Zo4oepukIeXN35TbzWmxhiB9xKySO21sHhsWzRcW3Ic
+
+{
+    "street": "Neue Straße 5",
+    "city": "Berlin",
+    "postalCode": "10115",
+    "country": "Deutschland"
+}
+
+### User remove address
+DELETE http://localhost:5517/user/profile/addresses/68a43f019bf31f718d704880
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzZTMyOWJmMzFmNzE4ZDcwNDg2OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NTk0MzQ4LCJleHAiOjE3NTU1OTc5NDh9.Zo4oepukIeXN35TbzWmxhiB9xKySO21sHhsWzRcW3Ic
 
 ### User update password
 PUT http://localhost:5517/user/profile/update-password
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyMjZhNmY3MWM0OTA5OTFmNzUyOCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NTIxNjQ5LCJleHAiOjE3NTU1MjUyNDl9.aX6HflIKYKIOEN-wmJTgssp7Ic7Da8h7aEXGulp7n4M
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzZTMyOWJmMzFmNzE4ZDcwNDg2OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NTk0MzQ4LCJleHAiOjE3NTU1OTc5NDh9.Zo4oepukIeXN35TbzWmxhiB9xKySO21sHhsWzRcW3Ic
 
 {
     "currentPassword": "TestPW123!",
@@ -62,7 +78,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyMjZhN
 }
 ### User delete
 DELETE http://localhost:5517/user/profile/delete
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTJkODE1N2Q3OTE2ZDEyYjQ2YTEwZSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NTEwMDY4LCJleHAiOjE3NTU1MTM2Njh9.qI5fnfQY75FARMgWf-oEMZV-aQCjFtSZXBGeLrdWz_I 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzZTMyOWJmMzFmNzE4ZDcwNDg2OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NTk0MzQ4LCJleHAiOjE3NTU1OTc5NDh9.Zo4oepukIeXN35TbzWmxhiB9xKySO21sHhsWzRcW3Ic 
 
 
 
@@ -74,8 +90,8 @@ POST http://localhost:5517/restaurant/register
 Content-Type: application/json
 
 {
-  "name": "Max Mustermann",
-  "email": "maxmu@restaurant.com",
+  "name": "bili",
+  "email": "bili@restaurant.com",
   "password": "TestPW123!",
   "phone": "+491234567890",
   "address": {
@@ -96,8 +112,8 @@ POST http://localhost:5517/restaurant/login
 Content-Type: application/json
 
 {
-  "email": "maxmus@restaurant.com",
-  "password": "NewTestPW123!"
+  "email": "bili@restaurant.com",
+  "password": "TestPW123!"
 }
 
 ### get Restaurant Besitzer
@@ -109,12 +125,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyNjBmY
 ### update Restaurant Besitzer
 PUT http://localhost:5517/restaurant/profile/update
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyNjBmYzUzYWE5NTY1MzkyNWUyZCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTIyNTc1LCJleHAiOjE3NTU1MjYxNzV9._esUlPzTU74Ljn4uf72-TEFzLFtl6xyuem4RQ59B9Pk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ0MDVlOWJmMzFmNzE4ZDcwNDg5NCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTk0ODc2LCJleHAiOjE3NTU1OTg0NzZ9.Im7ziAqhcatr9rPZverwJyXRKtj1Qaaa1Tc1NjNBVjw
 
 {
   
-  "name": "Max Musterman updated",
-  "email": "maxmus@restaurant.com",
+  "name": "Kbilali",
+  "email": "kbilai@restaurant.com",
   "phone": "+491234567890",
   "address": {
     "street": "Musterstraße 2",
@@ -132,17 +148,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyNjBmY
 ### Restaurant Besitzer update password
 PUT http://localhost:5517/restaurant/profile/update-password
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyNjBmYzUzYWE5NTY1MzkyNWUyZCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTIyODI3LCJleHAiOjE3NTU1MjY0Mjd9.PhVACTNnWJMfOcHENOVM6hkfe5210YNv6Yu1-0uMuBU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ0MDVlOWJmMzFmNzE4ZDcwNDg5NCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTk0ODc2LCJleHAiOjE3NTU1OTg0NzZ9.Im7ziAqhcatr9rPZverwJyXRKtj1Qaaa1Tc1NjNBVjw
 
 {
-  "currentPassword": "NewTestPW123!",
-  "newPassword": "TestPW123!",
-  "confirmNewPassword": "TestPW123!"
+  "currentPassword": "TestPW123!",
+  "newPassword": "NewTestPW123!",
+  "confirmNewPassword": "NewTestPW123!"
 }
 
 ### delete Restaurant Besitzer
 DELETE http://localhost:5517/restaurant/profile/delete
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyNjBmYzUzYWE5NTY1MzkyNWUyZCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTIyODI3LCJleHAiOjE3NTU1MjY0Mjd9.PhVACTNnWJMfOcHENOVM6hkfe5210YNv6Yu1-0uMuBU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ0MDVlOWJmMzFmNzE4ZDcwNDg5NCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTk0ODc2LCJleHAiOjE3NTU1OTg0NzZ9.Im7ziAqhcatr9rPZverwJyXRKtj1Qaaa1Tc1NjNBVjw
 
 
 ###------------------------------------------------------
@@ -171,26 +187,26 @@ POST http://localhost:5517/admin/login
 Content-Type: application/json
 
 {
-  "email": "kushtro20@gmail.com",
+  "email": "admin@gmail.com",
   "password": "AdminPW123!"
 }
 
 ### Get Admin
 GET http://localhost:5517/admin
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyOTMzNWYxZTk2ZGQ1M2RiZjFjNCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTUyNjQzOSwiZXhwIjoxNzU1NTMwMDM5fQ.FVEAq2Nja-p_iJIIt4vQM6Ic3wqK4g4GBVQdD5WXxyA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU5NTE5NSwiZXhwIjoxNzU1NTk4Nzk1fQ.9XCin_U0asuznYYWB8XdJDvlIV5EuSwlkXsVv8W-mfI
 
 ### Update Admin
 PUT http://localhost:5517/admin/profile/update
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyOTMzNWYxZTk2ZGQ1M2RiZjFjNCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTUyNjQzOSwiZXhwIjoxNzU1NTMwMDM5fQ.FVEAq2Nja-p_iJIIt4vQM6Ic3wqK4g4GBVQdD5WXxyA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU5NTE5NSwiZXhwIjoxNzU1NTk4Nzk1fQ.9XCin_U0asuznYYWB8XdJDvlIV5EuSwlkXsVv8W-mfI
 
 {
-  "name": "Kushtrim Bilali",
-  "email": "kushtro20@gmail.com",
+  "name": "admin",
+  "email": "admin@gmail.com",
   "phone": "+491234567890",
   "address": {
-    "street": "Agnes Miegel Straße 2",
-    "city": "Ludwigsburg",
+    "street": "Agnes Miegel Straße 200",
+    "city": "Stuttgart",
     "postalCode": "71642",
     "country": "Deutschland"
   }
@@ -202,9 +218,9 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyOTMzNWYxZTk2ZGQ1M2RiZjFjNCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTUyNjgyNywiZXhwIjoxNzU1NTMwNDI3fQ.aeXXqpc_E12awZy_SIGS7rewbGWFGM0B6XobIE_ZD8c
 
 {
-  "currentPassword": "NewAdminPW123!",
-  "newPassword": "AdminPW123!",
-  "confirmNewPassword": "AdminPW123!"
+  "currentPassword": "AdminPW123!",
+  "newPassword": "NewAdminPW123!",
+  "confirmNewPassword": "NewAdminPW123!"
 } 
 
 ### Delete Admin
@@ -213,7 +229,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyOTMzN
 
 ### All Restaurant Owners
 GET http://localhost:5517/admin/restaurant-owners
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTUyNzg0MiwiZXhwIjoxNzU1NTMxNDQyfQ.TEAGJSGbFV8q6bADtWd0KWhkTdrZViDNUMdkfGcutSY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU5NzA2NCwiZXhwIjoxNzU1NjAwNjY0fQ.yQTtD0eHeNiMq_NzNRWhkMnYZrgovmk9ZBVNYvnIYMk
 
 ### Get Restaurant Owner by ID
 GET http://localhost:5517/admin/restaurant-owners/68a30f6879baa0c0d0274ec0
@@ -225,11 +241,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3M
 
 ### Get All Users
 GET http://localhost:5517/admin/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTUyODU3OSwiZXhwIjoxNzU1NTMyMTc5fQ.cBjNYgYYP0rnOFFmOmCbuvtQdJcsb6uS9RORw3EA5UQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU5NTc1OCwiZXhwIjoxNzU1NTk5MzU4fQ.2X9sr3XKs4RBzmJD3WWWqoHhnalvBkjuhwT9aP-oQ24
 
 ### Get User by ID
-GET http://localhost:5517/admin/users/68a3226a6f71c490991f7528
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTUyODU3OSwiZXhwIjoxNzU1NTMyMTc5fQ.cBjNYgYYP0rnOFFmOmCbuvtQdJcsb6uS9RORw3EA5UQ
+GET http://localhost:5517/admin/users/68a4388eb7de580ede649859
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU5NTc1OCwiZXhwIjoxNzU1NTk5MzU4fQ.2X9sr3XKs4RBzmJD3WWWqoHhnalvBkjuhwT9aP-oQ24
 
 ### Delete User by ID
 DELETE http://localhost:5517/admin/users/68a3226a6f71c490991f7528
