@@ -64,8 +64,6 @@ export const createMenuItem = async (req, res) => {
   }
 };
 
-
-// Update menu item
 // Update menu item
 export const updateMenuItem = async (req, res) => {
   const { id } = req.params;
