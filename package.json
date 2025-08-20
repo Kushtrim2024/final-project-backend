@@ -5,14 +5,17 @@
   "type": "module",
   "scripts": {
     "start": "node --env-file .env app.js",
-    "dev": "nodemon --env-file .env app.js"
+    "dev": "nodemon --env-file .env app.js",
+    "seed": "node --env-file .env script/seed.js"
   },
   "keywords": [],
   "author": "Kushtrim",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@faker-js/faker": "^9.9.0",
     "bcrypt": "^6.0.0",
+    "cloudinary": "^2.7.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
@@ -22,6 +25,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.0",
     "multer": "^2.0.2",
+    "streamifier": "^0.1.1",
     "uuid": "^11.1.0"
   },
   "devDependencies": {

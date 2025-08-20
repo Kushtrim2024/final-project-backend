@@ -1,0 +1,172 @@
+### Get all Restaurants
+GET http://localhost:5517/restaurants
+Content-Type: application/json
+
+### Get Restaurant by ID
+GET http://localhost:5517/restaurants/68a23988bb5b07bed06d81a4
+Content-Type: application/json
+
+###-------------------------------------------------------
+### Admins Restaurants verwalten
+###-------------------------------------------------------
+
+### Get all Restaurants (Admin)
+GET http://localhost:5517/admin/restaurants
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU5NzczNSwiZXhwIjoxNzU1NjAxMzM1fQ.84Db__QJPQIx475S9MpoWSJRBv9yxJ1Q8-QwuQKud40
+
+### Get Restaurant by ID (Admin)
+GET http://localhost:5517/admin/restaurants/68a23988bb5b07bed06d81a4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU5NTk0OSwiZXhwIjoxNzU1NTk5NTQ5fQ.FDOCmqn4psG6EdxS-ZJnMExn4Bo7_ReAqrtyZILt1mc
+
+### Create Restaurant (Admin)
+POST http://localhost:5517/admin/restaurants
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU5NTk0OSwiZXhwIjoxNzU1NTk5NTQ5fQ.FDOCmqn4psG6EdxS-ZJnMExn4Bo7_ReAqrtyZILt1mc
+
+{
+  "restaurantName": "Test",
+  "description": "A cozy restaurant with a variety of dishes.",
+  "address": {
+    "street": "Lindenstraße 10",
+    "city": "Berlin",
+    "postalCode": "10115",
+    "country": "Deutschland"
+  },
+  "phone": "+491234567890",
+  "email": "test@gmail.com",
+  "ownerId": "68a23988bb5b07bed06d7d81",
+  "website": "https://example.com",
+  "image": "https://example.com/image.jpg"
+}
+
+### Update Restaurant (Admin)
+PUT http://localhost:5517/admin/restaurants/68a444e19bf31f718d70504b
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU5NTk0OSwiZXhwIjoxNzU1NTk5NTQ5fQ.FDOCmqn4psG6EdxS-ZJnMExn4Bo7_ReAqrtyZILt1mc
+
+{
+  "restaurantName": "test updated restaurant",
+  "description": "Updated description of the restaurant.",
+  "address": {
+    "street": "Updated Street",
+    "city": "Updated City",
+    "postalCode": "12345",
+    "country": "Updated Country"
+  },
+  "phone": "+491234567890",
+  "email": "rylan13@yahoo.com",
+    "website": "https://updated-restaurant.com",
+    "image": "https://example.com/updated-image.jpg"
+}
+
+### Update Restaurant Details (Admin)
+PUT http://localhost:5517/admin/restaurants/68a444e19bf31f718d70504b/details
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU5NTk0OSwiZXhwIjoxNzU1NTk5NTQ5fQ.FDOCmqn4psG6EdxS-ZJnMExn4Bo7_ReAqrtyZILt1mc
+
+{
+  "hours": {
+    "monday": {
+      "open": "10:00",
+      "close": "22:00"
+    },
+    "tuesday": {
+      "open": "9:00",
+      "close": "23:00"
+    },
+    "wednesday": {
+      "open": "10:00",
+      "close": "18:00"
+    },
+    "thursday": {
+      "open": "8:00",
+      "close": "22:00"
+    },
+    "friday": {
+      "open": "09:00",
+      "close": "21:00"
+    },
+    "saturday": {
+      "open": "09:00",
+      "close": "23:00"
+    },
+    "sunday": {
+      "open": "10:00",
+      "close": "20:00"
+    }
+  }
+}
+
+### Delete Restaurant (Admin)
+DELETE http://localhost:5517/admin/restaurants/68a396ce23e90936368db084
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU1MDc0OCwiZXhwIjoxNzU1NTU0MzQ4fQ.ZGdcnMoy0w0bp5RWWUILA8lN4uQmOic5ZWXUklyMnqI
+
+###-------------------------------------------------------
+### Restaurant Besitzer CRUD operations
+###-------------------------------------------------------  
+### Get Restaurant Besitzer
+GET http://localhost:5517/owner/restaurants/my-restaurant
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ0Yzg2MzdlZjdjYmUxMTM0MGZlYSIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NjA0NDc4LCJleHAiOjE3NTU2MDgwNzh9.eFOhpcaz3DjRiMkUboxqodF-5am5ElqrtZkzurGbraM 
+
+### Update Restaurant Besitzer
+PUT http://localhost:5517/owner/restaurants/my-restaurant
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTM5ODUxNGI5MDNkMGQ4MjBiZWY1ZCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTUxODI1LCJleHAiOjE3NTU1NTU0MjV9.9_96H571KBxASyszXbiOZNbaYyB5_GqjXKKH8T77gxI 
+
+{
+  "restaurantName": "Max's Diner",
+  "description": "A cozy diner with a variety of dishes.",
+  "address": {
+    "street": "Lindenstraße 10",
+    "city": "Ulm",
+    "postalCode": "10115",
+    "country": "Deutschland"
+  },
+  "phone": "+491234567890",
+  "email": "musterman@gmail.com",
+    "website": "https://newexample.com",
+    "image": "https://example.com/new-image.jpg"
+}
+
+### Update Restaurant Besitzer Details
+PUT http://localhost:5517/owner/restaurants/my-restaurant/details
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ0Yzg2MzdlZjdjYmUxMTM0MGZlYSIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTk3OTk4LCJleHAiOjE3NTU2MDE1OTh9.w7-6aY1VJTTSn4cS047HeF_SehHM1OdRMjFW8vSjxg4
+
+{
+  "hours": {
+    "monday": {
+      "open": "10:00",
+      "close": "22:00"
+    },
+    "tuesday": {
+      "open": "9:00",
+      "close": "23:00"
+    },
+    "wednesday": {
+      "open": "10:00",
+      "close": "18:00"
+    },
+    "thursday": {
+      "open": "8:00",
+      "close": "22:00"
+    },
+    "friday": {
+      "open": "09:00",
+      "close": "21:00"
+    },
+    "saturday": {
+      "open": "09:00",
+      "close": "23:00"
+    },
+    "sunday": {
+      "open": "10:00",
+      "close": "20:00"
+    }
+  }
+}
+
+### Delete Restaurant Besitzer
+DELETE http://localhost:5517/owner/restaurants/my-restaurant
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTM5ODUxNGI5MDNkMGQ4MjBiZWY1ZCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTUxODI1LCJleHAiOjE3NTU1NTU0MjV9.9_96H571KBxASyszXbiOZNbaYyB5_GqjXKKH8T77gxI 
+    

@@ -1,0 +1,59 @@
+### Restaurant Owner Endpoints
+POST http://localhost:5517/owner/restaurants/68a4832b77d748d8c18f4024/menu-items
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ4MzJiNzdkNzQ4ZDhjMThmNDAyNCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NjExOTYyLCJleHAiOjE3NTU2MTU1NjJ9.EeGd4muikN9zKrOqK_60NhpR7lsl56dEuAZfoJqecgw
+
+{
+  "name": "Pizza Margherita",
+  "description": "Classic pizza with tomato sauce, mozzarella, and fresh basil.",
+  "price": 8.99,
+  "image": "https://example.com/pizza-margherita.jpg",
+  "category": "Pizza",
+  "sizes": [
+    {
+      "label": "Small",
+      "price": 9.99
+    },
+    {
+      "label": "Medium",
+      "price": 12
+    },
+    {
+      "label": "Large",
+      "price": 14
+    }
+  ]
+}  
+### POST Menu Items
+POST http://localhost:5517/owner/restaurants/68a4832b77d748d8c18f4024/menu-items
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ4MzJiNzdkNzQ4ZDhjMThmNDAyNCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NjExOTYyLCJleHAiOjE3NTU2MTU1NjJ9.EeGd4muikN9zKrOqK_60NhpR7lsl56dEuAZfoJqecgw
+
+{
+    "name": "Burger Deluxe",
+    "description": "Juicy beef patty with lettuce, tomato, and special sauce.",
+    "image": "https://example.com/burger-deluxe.jpg",
+    "category": "Burger",
+    "basePrice": 10.99
+}
+
+### Get Menu Items
+GET http://localhost:5517/owner/restaurants/68a4832b77d748d8c18f4024/menu-items
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ4MzJiNzdkNzQ4ZDhjMThmNDAyNCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NjExOTYyLCJleHAiOjE3NTU2MTU1NjJ9.EeGd4muikN9zKrOqK_60NhpR7lsl56dEuAZfoJqecgw
+
+### Update Menu Item
+PUT http://localhost:5517/owner/restaurants/68a4832b77d748d8c18f4024/menu-items/68a483b377d748d8c18f402a
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ4MzJiNzdkNzQ4ZDhjMThmNDAyNCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NjExOTYyLCJleHAiOjE3NTU2MTU1NjJ9.EeGd4muikN9zKrOqK_60NhpR7lsl56dEuAZfoJqecgw
+
+{
+  "name": "Pizza Margherita Updated",
+  "description": "Updated description of the classic pizza with tomato sauce, mozzarella, and fresh basil.",
+  "price": 9.99,
+  "image": "https://example.com/pizza-margherita-updated.jpg",
+  "category": "Pizza"
+}
+
+### Delete Menu Item
+DELETE http://localhost:5517/owner/restaurants/68a4832b77d748d8c18f4024/menu-items/68a483b377d748d8c18f402a
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ4MzJiNzdkNzQ4ZDhjMThmNDAyNCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NjExOTYyLCJleHAiOjE3NTU2MTU1NjJ9.EeGd4muikN9zKrOqK_60NhpR7lsl56dEuAZfoJqecgw 
