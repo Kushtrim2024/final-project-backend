@@ -9,15 +9,15 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 
 // Profile
-router.get("/profile", authMiddleware(), profile);
-router.put("/profile/update", authMiddleware(), updateUserProfile);
-router.put("/profile/update-password", authMiddleware(), updateUserPassword);
-router.delete("/profile/delete", authMiddleware(), deleteUserAccount);
+router.get("/profile", authMiddleware(["user"]), profile);
+router.put("/profile/update", authMiddleware(["user"]), updateUserProfile);
+router.put("/profile/update-password", authMiddleware(["user"]), updateUserPassword);
+router.delete("/profile/delete", authMiddleware(["user"]), deleteUserAccount);
 
 // Addresses
-router.post("/profile/addresses", authMiddleware(), addAddress);
-router.get("/profile/addresses/default", authMiddleware(), getDefaultAddress);
-router.delete("/profile/addresses/:addressId", authMiddleware(), removeAddress);
+router.post("/profile/addresses", authMiddleware(["user"]), addAddress);
+router.get("/profile/addresses/default", authMiddleware(["user"]), getDefaultAddress);
+router.delete("/profile/addresses/:addressId", authMiddleware(["user"]), removeAddress);
 
 
 export default router;

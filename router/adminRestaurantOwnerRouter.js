@@ -5,8 +5,9 @@ import { deleteRestaurantOwner, getAllRestaurantOwners, getRestaurantOwnerById }
 
 const router = express.Router()
 
-router.get("/restaurant-owners", authMiddleware(["admin"]), getAllRestaurantOwners)
-router.get("/restaurant-owners/:id", authMiddleware(["admin"]), getRestaurantOwnerById)
-router.delete("/restaurant-owners/:id", authMiddleware(["admin"]),deleteRestaurantOwner);
+router.get("/", authMiddleware(["admin"]), getAllRestaurantOwners);
+router.get("/:id", authMiddleware(["admin"]), getRestaurantOwnerById);
+router.delete("/:id", authMiddleware(["admin"]), deleteRestaurantOwner);
+
 
 export default router

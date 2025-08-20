@@ -213,3 +213,86 @@ export const deleteMyRestaurant = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
+export const getRestaurantsByCategory = async (req, res) => {
+  const { category } = req.query; // Query-Parameter statt req.params
+  if (!category) return res.status(400).json({ message: "Query parameter is required" });
+
+  try {
+    const restaurants = await Restaurant.find({ categories: category }).lean();
+    res.status(200).json(restaurants);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Restaurants by tag
+export const getRestaurantsByTag = async (req, res) => {
+  try {
+    const restaurants = await Restaurant.find({ tags: req.params.tag }).lean();
+    res.status(200).json(restaurants);
+  } catch (error) {
+    console.error("Error fetching restaurants by tag:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const searchRestaurants = async (req, res) => {
+  const { name } = req.query;
+  if (!name) return res.status(400).json({ message: "Query parameter is required" });
+
+  try {
+    const regex = new RegExp(name, "i");
+    const restaurants = await Restaurant.find({ restaurantName: { $regex: regex } }).lean();
+    res.status(200).json(restaurants);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Get restaurants by postal code
+export const getRestaurantsByPostCode = async (req, res) => {
+  const { postcode } = req.query;  // Query statt params
+  if (!postcode) {
+    return res.status(400).json({ message: "Postal code is required" });
+  }
+
+  try {
+    const restaurants = await Restaurant.find({ "address.postalCode": postcode }).lean();
+    res.status(200).json(restaurants);
+  } catch (error) {
+    console.error("Error fetching restaurants by postal code:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+// Get restaurants by location (coordinates)
+export const getRestaurantsByLocation = async (req, res) => {
+  const { lat, lng } = req.query;
+  if (!lat || !lng) {
+    return res.status(400).json({ message: "Latitude and longitude are required" });
+  }
+
+  try {
+    const latitude = parseFloat(lat);
+    const longitude = parseFloat(lng);
+
+    const restaurants = await Restaurant.find({
+      location: {
+        $near: {
+          $geometry: { type: "Point", coordinates: [longitude, latitude] },
+          $maxDistance: 5000 // z.B. 5 km Radius
+        }
+      }
+    }).lean();
+
+    res.status(200).json(restaurants);
+  } catch (error) {
+    console.error("Error fetching restaurants by location:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

@@ -1,0 +1,15 @@
+### Search for Restaurants by Name
+GET http://localhost:5517/restaurants/search?name=lemke
+Content-Type: application/json
+
+### Search Restaurants by Category
+GET http://localhost:5517/restaurants/category?category=Drinks
+Content-Type: application/json
+
+### Search Restaurants by Postcode
+GET http://localhost:5517/restaurants/postcode?postcode=55756
+Content-Type: application/json
+
+### Search Restaurants by location
+GET http://localhost:5517/restaurants/location?lat=-24.8467&lng=-84.271
+Content-Type: application/json

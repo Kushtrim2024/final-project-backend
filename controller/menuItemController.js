@@ -1,5 +1,4 @@
 import MenuItem from "../models/MenuItem.js";
-import Restaurant from "../models/Restaurant.js";
 import { uploadBufferToCloudinary } from "../utils/cloudinaryUpload.js";
 
 // Get menu items
@@ -117,28 +116,6 @@ export const deleteMenuItem = async (req, res) => {
     res.status(200).json({ message: "Menu item deleted successfully" });
   } catch (error) {
     console.error("Error deleting menu item:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// Restaurants by category
-export const getRestaurantsByCategory = async (req, res) => {
-  try {
-    const restaurants = await Restaurant.find({ categories: req.params.category }).lean();
-    res.status(200).json(restaurants);
-  } catch (error) {
-    console.error("Error fetching restaurants by category:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// Restaurants by tag
-export const getRestaurantsByTag = async (req, res) => {
-  try {
-    const restaurants = await Restaurant.find({ tags: req.params.tag }).lean();
-    res.status(200).json(restaurants);
-  } catch (error) {
-    console.error("Error fetching restaurants by tag:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

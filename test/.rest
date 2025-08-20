@@ -86,7 +86,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzZTMyO
 ### Restaurant Besitzer CRUD operations
 ###------------------------------------------------------
 ### Restaurant Besitzer register
-POST http://localhost:5517/restaurant/register
+POST http://localhost:5517/owner/register
 Content-Type: application/json
 
 {
@@ -108,7 +108,7 @@ Content-Type: application/json
 
 ### Restaurant Besitzer login
 
-POST http://localhost:5517/restaurant/login
+POST http://localhost:5517/owner/login
 Content-Type: application/json
 
 {
@@ -117,13 +117,13 @@ Content-Type: application/json
 }
 
 ### get Restaurant Besitzer
-GET http://localhost:5517/restaurant/getRestaurantOwnerProfile
+GET http://localhost:5517/owner/getRestaurantOwnerProfile
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMyNjBmYzUzYWE5NTY1MzkyNWUyZCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTIyNTc1LCJleHAiOjE3NTU1MjYxNzV9._esUlPzTU74Ljn4uf72-TEFzLFtl6xyuem4RQ59B9Pk
 
 
 
 ### update Restaurant Besitzer
-PUT http://localhost:5517/restaurant/profile/update
+PUT http://localhost:5517/owner/profile/update
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ0MDVlOWJmMzFmNzE4ZDcwNDg5NCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTk0ODc2LCJleHAiOjE3NTU1OTg0NzZ9.Im7ziAqhcatr9rPZverwJyXRKtj1Qaaa1Tc1NjNBVjw
 
@@ -146,7 +146,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ0MDVlO
 }
 
 ### Restaurant Besitzer update password
-PUT http://localhost:5517/restaurant/profile/update-password
+PUT http://localhost:5517/owner/profile/update-password
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ0MDVlOWJmMzFmNzE4ZDcwNDg5NCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTk0ODc2LCJleHAiOjE3NTU1OTg0NzZ9.Im7ziAqhcatr9rPZverwJyXRKtj1Qaaa1Tc1NjNBVjw
 
@@ -157,7 +157,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ0MDVlO
 }
 
 ### delete Restaurant Besitzer
-DELETE http://localhost:5517/restaurant/profile/delete
+DELETE http://localhost:5517/owner/profile/delete
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ0MDVlOWJmMzFmNzE4ZDcwNDg5NCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NTk0ODc2LCJleHAiOjE3NTU1OTg0NzZ9.Im7ziAqhcatr9rPZverwJyXRKtj1Qaaa1Tc1NjNBVjw
 
 
@@ -191,8 +191,12 @@ Content-Type: application/json
   "password": "AdminPW123!"
 }
 
-### Get Admin
+### Get all Admins
 GET http://localhost:5517/admin
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU5NTE5NSwiZXhwIjoxNzU1NTk4Nzk1fQ.9XCin_U0asuznYYWB8XdJDvlIV5EuSwlkXsVv8W-mfI
+
+### Get Admin by ID
+GET http://localhost:5517/admin/id/68a329335f1e96dd53dbf1c4
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU5NTE5NSwiZXhwIjoxNzU1NTk4Nzk1fQ.9XCin_U0asuznYYWB8XdJDvlIV5EuSwlkXsVv8W-mfI
 
 ### Update Admin

@@ -97,6 +97,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3M
   }
 }
 
+### Update Restaurant Status (Admin)
+PUT http://localhost:5517/admin/restaurants/68a444e19bf31f718d70504b/status
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU1MDc0OCwiZXhwIjoxNzU1NTU0MzQ4fQ.ZGdcnMoy0w0bp5RWWUILA8lN4uQmOic5ZWXUklyMnqI
+
+{
+  "status": "active" // or "inactive"
+}
+
 ### Delete Restaurant (Admin)
 DELETE http://localhost:5517/admin/restaurants/68a396ce23e90936368db084
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU1MDc0OCwiZXhwIjoxNzU1NTU0MzQ4fQ.ZGdcnMoy0w0bp5RWWUILA8lN4uQmOic5ZWXUklyMnqI
