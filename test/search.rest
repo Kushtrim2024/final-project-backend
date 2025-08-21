@@ -1,5 +1,5 @@
 ### Search for Restaurants by Name
-GET http://localhost:5517/restaurants/search?name=lemke
+GET http://localhost:5517/restaurants/search?name=Bode
 Content-Type: application/json
 
 ### Search Restaurants by Category
