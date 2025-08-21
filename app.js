@@ -15,6 +15,7 @@ import menuRouter from "./router/menuRouter.js";
 import orderRouter from "./router/orderRouter.js";
 import restaurantRouter from "./router/restaurantRouter.js";
 
+
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5517;
@@ -51,6 +52,8 @@ app.use("/user", userRouter);
 
 // Orders
 app.use("/orders", orderRouter);
+app.use("/admin/orders", adminRouter);
+app.use("/owner/orders", restaurantOwnerRouter);
 
 // Health Check
 app.get("/", (req, res) => res.send("Liefrik Backend läuft 🚀"));

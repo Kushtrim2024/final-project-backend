@@ -2,6 +2,7 @@ import express from "express";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { adminDashboard, changeAdminPassword, deleteAdmin, getAdminById, getAllAdmins, loginAdmin, registerAdmin, updateAdminProfile} from "../controller/adminController.js";
 import Admin from "../models/Admin.js";
+import { deleteOrder, getAllOrders } from "../controller/orderController.js";
 
 
 const router = express.Router();
@@ -26,6 +27,9 @@ router.get("/id/:id", authMiddleware(["admin"]), getAdminById);
 router.put("/profile/update", authMiddleware(["admin"]), updateAdminProfile);
 router.put("/profile/change-password", authMiddleware(["admin"]), changeAdminPassword);
 router.delete("/profile/:id/delete", authMiddleware(["admin"]), deleteAdmin);
+
+router.get("/", authMiddleware(["admin"]), getAllOrders)
+router.delete("/:orderId", authMiddleware(["admin", "restaurant"]), deleteOrder);
 
 
 

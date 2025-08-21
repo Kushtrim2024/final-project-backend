@@ -1,8 +1,7 @@
 import express from "express";
-// import { addMenuItem } from "../controller/restaurantController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { deleteRestaurantOwnerAccount, getRestaurantOwnerProfile, loginRestaurantOwner, updateRestaurantOwnerProfile, registerRestaurantOwner, updateRestaurantOwnerPassword } from "../controller/registerRestaurantOwner.js";
-import Restaurant from "../models/Restaurant.js";
+import { deleteOrder, updateOrderStatus } from "../controller/orderController.js";
 
 const router = express.Router();
 
@@ -16,6 +15,7 @@ router.put("/profile/update", authMiddleware(["restaurant"]), updateRestaurantOw
 router.put("/profile/update-password", authMiddleware(["restaurant"]),updateRestaurantOwnerPassword);
 router.delete("/profile/delete", authMiddleware(["restaurant"]), deleteRestaurantOwnerAccount);
 
-// router.post("/menu", authMiddleware(["restaurant"]), addMenuItem);
+router.put("/:orderId/status", authMiddleware(["restaurant"]), updateOrderStatus);
+router.delete("/:orderId", authMiddleware(["admin", "restaurant"]), deleteOrder);
 
 export default router;
