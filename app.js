@@ -14,16 +14,18 @@ import adminRestaurantOwnerRouter from "./router/adminRestaurantOwnerRouter.js";
 import menuRouter from "./router/menuRouter.js";
 import orderRouter from "./router/orderRouter.js";
 import restaurantRouter from "./router/restaurantRouter.js";
+import cartRouter from "./router/cartRouter.js";
+
 
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 5517;
+const PORT = process.env.PORT || 5518;
 
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:5517"], // Frontend
+    origin: ["http://localhost:3000", "http://localhost:5518"], // Frontend
     credentials: true,
   })
 );
@@ -49,6 +51,7 @@ app.use("/admin", adminRouter);
 
 // User Router
 app.use("/user", userRouter);
+app.use("/cart", cartRouter);
 
 // Orders
 app.use("/orders", orderRouter);

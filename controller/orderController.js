@@ -5,98 +5,6 @@ import Restaurant from "../models/Restaurant.js";
 import MenuItem from "../models/MenuItem.js";
 import Order from "../models/Order.js";
 
-// ---------------- CART ----------------
-
-// Add products to the cart
-export const addToCart = async (req, res) => {
-  try {
-    const { userId, restaurantId, menuItemId, quantity } = req.body;
-
-    const user = await Users.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    const restaurant = await Restaurant.findById(restaurantId);
-    if (!restaurant) return res.status(404).json({ message: "Restaurant not found" });
-
-    const menuItem = await MenuItem.findById(menuItemId);
-    if (!menuItem) return res.status(404).json({ message: "Menu item not found" });
-
-    user.cart.push({ restaurantId, menuItemId, quantity });
-    await user.save();
-
-    res.status(200).json({ message: "Item added to cart successfully", cart: user.cart });
-  } catch (error) {
-    console.error("Error adding to cart:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// View cart
-export const viewCart = async (req, res) => {
-  try {
-    const { userId } = req.params;
-
-    // Find the user and populate menu items inside cart
-    const user = await Users.findById(userId).populate("cart.menuItemId");
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.status(200).json({ cart: user.cart });
-  } catch (error) {
-    console.error("Error viewing cart:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// ---------------- PAYMENT ----------------
-
-// Choose Payment Method
-export const choosePaymentMethod = async (req, res) => {
-  try {
-    const { userId, paymentMethod } = req.body;
-
-    const allowedMethods = ["card", "online"];
-    if (!allowedMethods.includes(paymentMethod)) {
-      return res.status(400).json({ message: "Invalid payment method" });
-    }
-
-    const user = await Users.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    user.paymentMethod = paymentMethod;
-    await user.save();
-
-    res.status(200).json({ message: "Payment method updated successfully", paymentMethod });
-  } catch (error) {
-    console.error("Error choosing payment method:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// Checkout
-export const checkout = async (req, res) => {
-  try {
-    const { userId, paymentDetails } = req.body;
-
-    const user = await Users.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    // Simulated payment process
-    const paymentSuccess = true;
-
-    if (paymentSuccess) {
-      user.cart = [];
-      await user.save();
-      res.status(200).json({ message: "Checkout successful", cart: user.cart });
-    } else {
-      res.status(400).json({ message: "Payment failed" });
-    }
-  } catch (error) {
-    console.error("Error during checkout:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
 
 // ---------------- ORDERS ----------------
 
@@ -193,26 +101,37 @@ export const getOrderDetails = async (req, res) => {
 };
 
 // Update Order Status
-export const updateOrderStatus = async (req, res) => {
+export const updateOrderStatus = async (orderId, newStatus, userId = null) => {
+  const allowedStatuses = ["pending", "confirmed", "preparing", "out_for_delivery", "delivered", "cancelled"];
+  if (!allowedStatuses.includes(newStatus)) {
+    throw new Error("Invalid status");
+  }
+
+  const order = await Order.findById(orderId);
+  if (!order) throw new Error("Order not found");
+
+  order.status = newStatus;
+  order.actions.push({
+    status: newStatus,
+    updatedBy: userId,
+    timestamp: new Date(),
+  });
+
+  await order.save();
+  return order;
+};
+
+// Change Order Status from Owner/Admin
+export const changeOrderStatus = async (req, res) => {
   try {
-    const { orderId, status } = req.body;
+    const { orderId, newStatus, adminId } = req.body;
 
-    const allowedStatuses = ["pending", "confirmed", "preparing", "out_for_delivery", "delivered", "cancelled"];
-    if (!allowedStatuses.includes(status)) {
-      return res.status(400).json({ message: "Invalid status" });
-    }
-
-    const order = await Order.findById(orderId);
-    if (!order) return res.status(404).json({ message: "Order not found" });
-
-    order.status = status;
-    order.actions.push({ status, updatedBy: req.user?.id }); // if JWT auth
-    await order.save();
+    const order = await updateOrderStatus(orderId, newStatus, adminId);
 
     res.status(200).json({ message: "Order status updated", order });
   } catch (error) {
     console.error("Error updating order status:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: error.message });
   }
 };
 

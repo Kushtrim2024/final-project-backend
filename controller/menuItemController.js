@@ -1,16 +1,30 @@
 import MenuItem from "../models/MenuItem.js";
 import { uploadBufferToCloudinary } from "../utils/cloudinaryUpload.js";
 
-// Get menu items
+// Get products for a restaurant
 export const getMenuItems = async (req, res) => {
   try {
-    const menuItems = await MenuItem.find({ restaurantId: req.params.restaurantId }).lean();
+    const { restaurantId } = req.params;
+    const menuItems = await MenuItem.find({ restaurantId }).lean();
     res.status(200).json(menuItems);
   } catch (error) {
-    console.error("Error fetching menu items:", error);
+    console.error("Error fetching products:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// Get menu item by ID
+export const getMenuItemById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const menuItem = await MenuItem.findById(id).lean();
+    if (!menuItem) return res.status(404).json({ message: "Product not found" });
+    res.status(200).json(menuItem);
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+}
 
 // Create menu item
 export const createMenuItem = async (req, res) => {
@@ -58,12 +72,12 @@ export const createMenuItem = async (req, res) => {
 
     res.status(201).json(newMenuItem);
   } catch (error) {
-    console.error("Error creating menu item:", error);
+    console.error("Error creating product:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// Update menu item
+// Update product
 export const updateMenuItem = async (req, res) => {
   const { id } = req.params;
   let updates = { ...req.body };

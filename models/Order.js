@@ -30,13 +30,21 @@ const OrderSchema = new mongoose.Schema(
 
     // Bestell-Details
     items: [
+  {
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: "MenuItem" },
+    name: { type: String, required: true },
+    quantity: { type: Number, required: true, min: 1 },
+    price: { type: Number, required: true },
+    size: { type: String },
+    addOns: [
       {
-        productId: { type: mongoose.Schema.Types.ObjectId, ref: "MenuItem" },
-        name: { type: String, required: true },
-        quantity: { type: Number, required: true, min: 1 },
-        price: { type: Number, required: true },
-      },
-    ],
+        name: String,
+        price: Number,
+      }
+    ]
+  }
+],
+
     total: {
       type: Number,
       required: true,

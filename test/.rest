@@ -2,12 +2,12 @@
 ### User CRUD operations
 ###------------------------------------------------------
 ### User register
-POST http://localhost:5517/user/register
+POST http://localhost:5518/user/register
 Content-Type: application/json 
 
 {
-    "name": "User2",
-    "email": "user2@gmail.com",
+    "name": "User3",
+    "email": "user3@gmail.com",
     "password": "TestPW123!",
     "passwordConfirm": "TestPW123!",
     "phone": "+491234567890",
@@ -21,11 +21,11 @@ Content-Type: application/json
 }
 
 ### User login
-POST http://localhost:5517/user/login
+POST http://localhost:5518/user/login
 Content-Type: application/json
 
 {
-    "email": "user2@gmail.com",
+    "email": "user3@gmail.com",
     "password": "TestPW123!"
 }
 

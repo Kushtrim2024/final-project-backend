@@ -1,0 +1,40 @@
+### Add product to cart
+POST http://localhost:5518/cart/add
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTZmZmIyODlkYmZhZjYzN2RkNzY1ZSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NzgzMTcwLCJleHAiOjE3NTU3ODY3NzB9.OzWGo4yUQJp33SMdXJ-Xkw41GWEKYB7hPk_4ykui73k
+
+{
+    "userId": "68a6ffb289dbfaf637dd765e",
+    "restaurantId": "68a23988bb5b07bed06d81a4",
+    "menuItemId": "68a23988bb5b07bed06d85c8",
+    "quantity": 2
+}  
+
+### View Cart
+GET http://localhost:5518/cart/68a6ffb289dbfaf637dd765e
+Content-Type: application/json 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTZmZmIyODlkYmZhZjYzN2RkNzY1ZSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NzgzMTcwLCJleHAiOjE3NTU3ODY3NzB9.OzWGo4yUQJp33SMdXJ-Xkw41GWEKYB7hPk_4ykui73k 
+
+### Choose Payment Method
+POST http://localhost:5518/cart/choose-payment
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTZmZmIyODlkYmZhZjYzN2RkNzY1ZSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NzgzMTcwLCJleHAiOjE3NTU3ODY3NzB9.OzWGo4yUQJp33SMdXJ-Xkw41GWEKYB7hPk_4ykui73k 
+
+{
+    "userId": "68a6ffb289dbfaf637dd765e",
+    "paymentMethod": "card"
+}
+
+### Checkout
+POST http://localhost:5518/cart/checkout
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTZmZmIyODlkYmZhZjYzN2RkNzY1ZSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NzgzMTcwLCJleHAiOjE3NTU3ODY3NzB9.OzWGo4yUQJp33SMdXJ-Xkw41GWEKYB7hPk_4ykui73k
+
+{
+  "userId": "68a6ffb289dbfaf637dd765e",
+  "customerName": "Max Mustermann",
+  "phone": "+49123456789",
+  "address": "Musterstraße 3, Berlin",
+  "deliveryType": "delivery",  
+  "paymentMethod": "card"
+}
