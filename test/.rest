@@ -25,7 +25,7 @@ POST http://localhost:5518/user/login
 Content-Type: application/json
 
 {
-    "email": "user3@gmail.com",
+    "email": "user1@gmail.com",
     "password": "TestPW123!"
 }
 
@@ -108,12 +108,12 @@ Content-Type: application/json
 
 ### Restaurant Besitzer login
 
-POST http://localhost:5517/owner/login
+POST http://localhost:5518/owner/login
 Content-Type: application/json
 
 {
-  "email": "bili@restaurant.com",
-  "password": "TestPW123!"
+  "email": "melisa_johnston0@hotmail.com",
+  "password": "OwnerPW123!"
 }
 
 ### get Restaurant Besitzer
@@ -183,7 +183,7 @@ Content-Type: application/json
 }
 
 ### Admin login
-POST http://localhost:5517/admin/login
+POST http://localhost:5518/admin/login
 Content-Type: application/json
 
 {
@@ -193,16 +193,16 @@ Content-Type: application/json
 
 ### Get all Admins
 GET http://localhost:5517/admin
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU5NTE5NSwiZXhwIjoxNzU1NTk4Nzk1fQ.9XCin_U0asuznYYWB8XdJDvlIV5EuSwlkXsVv8W-mfI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjA0ODYyOCwiZXhwIjoxNzU2MDUyMjI4fQ.Een91NlCu_uOi4lFPC8oeGkjYbt9Infnm36lgHSVGyM
 
 ### Get Admin by ID
 GET http://localhost:5517/admin/id/68a329335f1e96dd53dbf1c4
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU5NTE5NSwiZXhwIjoxNzU1NTk4Nzk1fQ.9XCin_U0asuznYYWB8XdJDvlIV5EuSwlkXsVv8W-mfI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjA0ODYyOCwiZXhwIjoxNzU2MDUyMjI4fQ.Een91NlCu_uOi4lFPC8oeGkjYbt9Infnm36lgHSVGyM
 
 ### Update Admin
 PUT http://localhost:5517/admin/profile/update
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTU5NTE5NSwiZXhwIjoxNzU1NTk4Nzk1fQ.9XCin_U0asuznYYWB8XdJDvlIV5EuSwlkXsVv8W-mfI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjA0ODYyOCwiZXhwIjoxNzU2MDUyMjI4fQ.Een91NlCu_uOi4lFPC8oeGkjYbt9Infnm36lgHSVGyM
 
 {
   "name": "admin",

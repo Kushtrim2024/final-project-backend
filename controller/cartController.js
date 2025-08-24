@@ -124,29 +124,26 @@ export const choosePaymentMethod = async (req, res) => {
 // Checkout
 export const checkout = async (req, res) => {
   try {
-    const { userId, customerName, phone, address, deliveryType, paymentMethod, paymentDetails } = req.body;
+    const { userId, restaurantId, customerName, phone, address, deliveryType, paymentMethod, paymentDetails } = req.body;
 
-    // 1. Prüfe gültige Payment-Methoden
     const allowedMethods = ["card", "online"];
     if (!allowedMethods.includes(paymentMethod)) {
       return res.status(400).json({ message: "Invalid payment method" });
     }
 
-    // 2. Hole den Warenkorb
     const cart = await Cart.findOne({ userId }).populate("items.menuItem");
     if (!cart || cart.items.length === 0) {
       return res.status(400).json({ message: "Cart is empty" });
     }
 
-    // 3. Formatiere Items für Order
     const orderItems = cart.items.map(item => {
       const menuItem = item.menuItem;
-
       return {
         productId: menuItem ? menuItem._id : null,
         name: menuItem ? menuItem.name : "Deleted Item",
         quantity: item.quantity,
-        price: item.totalPrice,
+        price: menuItem.price,        // single unit price
+        total: item.totalPrice,       // qty * price
         size: item.size || null,
         addOns: item.addOns?.map(a => ({
           name: a.name,
@@ -155,16 +152,15 @@ export const checkout = async (req, res) => {
       };
     });
 
-    // 4. Berechne Gesamtsumme
-    const total = orderItems.reduce((sum, item) => sum + item.price, 0);
+    const total = orderItems.reduce((sum, item) => sum + item.total, 0);
 
-    // 5. Simuliere Payment
-    const paymentSuccess = true; // Hier echte Payment-Integration einbauen
+
+    const paymentSuccess = true; 
     const paymentStatus = paymentSuccess ? "paid" : "failed";
 
-    // 6. Erstelle Order
     const order = new Order({
       userId: userId || undefined,
+      restaurantId,
       customerName,
       phone,
       address: deliveryType === "delivery" ? address : undefined,
@@ -179,15 +175,15 @@ export const checkout = async (req, res) => {
 
     await order.save();
 
-    // 7. Leere den Warenkorb
     cart.items = [];
     await cart.save();
 
     res.status(200).json({ message: "Checkout successful", order });
   } catch (error) {
-  console.error("Error during checkout:", error);
-  res.status(500).json({ 
-    message: error.message,
-    stack: error.stack 
-  });}
+    console.error("Error during checkout:", error);
+    res.status(500).json({ 
+      message: error.message,
+      stack: error.stack 
+    });
+  }
 };

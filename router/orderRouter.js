@@ -5,23 +5,28 @@ import {
   getOrderDetails,
   getOrderHistory,
   placeOrder,
-  updateOrder,
-  cancelOrder
+  cancelOrder,
+  getAllOrders,
+  updateOrderStatus
 } from "../controller/orderController.js";
 
 const router = express.Router();
 
 
 // Orders
-router.post("/:orderId/placeorder", authMiddleware(["user"]), placeOrder);
+router.post("/", authMiddleware(["user"]), placeOrder);
+router.get("/", authMiddleware(["user", "owner", "admin"]), getAllOrders);
+
+router.get("/history", authMiddleware(["user"]), getOrderHistory);
+
+// Details zuerst, bevor allgemeine :orderId
+// Alle Rollen, die Zugriff haben sollen
+router.get("/details/:id", authMiddleware(["user", "restaurant", "admin"]), getOrderDetails);
+
 
 // Cancel & Update
-router.put("/:orderId/cancel", authMiddleware(["user"]), cancelOrder);
-router.put("/:orderId", authMiddleware(["user"]), updateOrder);
-
-// History & Details
-router.get("/:orderId/details", authMiddleware(["user"]), getOrderDetails);
-router.get("/history/:userId", authMiddleware(["user"]), getOrderHistory);
+router.put("/cancel/:orderId", authMiddleware(["user"]), cancelOrder);
+router.put("/:orderId", authMiddleware(["user"]), updateOrderStatus);
 
 
 export default router;

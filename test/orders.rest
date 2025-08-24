@@ -1,0 +1,92 @@
+### ----------------------------
+### User Endpoints
+### ----------------------------
+
+### Place Order
+POST http://localhost:5518/orders
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzODhlYjdkZTU4MGVkZTY0OTg1OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU2MDI5NTExLCJleHAiOjE3NTYwMzMxMTF9.r322h3n32o25pNlWMjeSnoW22b6YSomkQLwigzU5jzI
+
+{
+  "userId": "68a4388eb7de580ede649859",
+  "restaurantId": "68a23988bb5b07bed06d81af",
+  "cart": [
+    {
+      "menuItemId": "68a23988bb5b07bed06d8a0c",
+      "quantity": 2
+    }
+  ],
+  "customerName": "User 1",
+  "phone": "+49123456789",
+  "address": "Musterstraße 1, Berlin",
+  "deliveryType": "delivery",
+  "paymentMethod": "card"
+}
+
+### Get all Order (user)
+GET http://localhost:5518/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzODhlYjdkZTU4MGVkZTY0OTg1OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU2MDMzMjgzLCJleHAiOjE3NTYwMzY4ODN9.Ra0umzXcaNfbJdCKWzaWtVytebDqRxatI89PCn6ZkyQ
+
+
+### Get Order History
+GET http://localhost:5518/orders/history
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzODhlYjdkZTU4MGVkZTY0OTg1OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU2MDMzMjgzLCJleHAiOjE3NTYwMzY4ODN9.Ra0umzXcaNfbJdCKWzaWtVytebDqRxatI89PCn6ZkyQ
+
+### Get Order Details
+GET http://localhost:5518/orders/details/68aae4b0cd7db4ca639d0579
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzODhlYjdkZTU4MGVkZTY0OTg1OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU2MDMzMjgzLCJleHAiOjE3NTYwMzY4ODN9.Ra0umzXcaNfbJdCKWzaWtVytebDqRxatI89PCn6ZkyQ
+
+### Cancel Order (User)
+PUT http://localhost:5518/orders/cancel/68aae4b0cd7db4ca639d0579
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzODhlYjdkZTU4MGVkZTY0OTg1OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU2MDI5NTExLCJleHAiOjE3NTYwMzMxMTF9.r322h3n32o25pNlWMjeSnoW22b6YSomkQLwigzU5jzI
+
+### ----------------------------
+### Admin Endpoints
+### ----------------------------
+
+### Get all Orders (Admin)
+GET http://localhost:5518/admin/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjA0ODYyOCwiZXhwIjoxNzU2MDUyMjI4fQ.Een91NlCu_uOi4lFPC8oeGkjYbt9Infnm36lgHSVGyM
+
+### Change Order Status (Admin)
+PUT http://localhost:5518/admin/orders/status
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjA0ODYyOCwiZXhwIjoxNzU2MDUyMjI4fQ.Een91NlCu_uOi4lFPC8oeGkjYbt9Infnm36lgHSVGyM
+
+{
+  "orderId": "68a9e9db2f78158ba2c44612",
+  "newStatus": "ready"
+} 
+### Get Order Details (Admin)
+GET http://localhost:5518/admin/orders/details/68aae4b0cd7db4ca639d0579
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjA0ODYyOCwiZXhwIjoxNzU2MDUyMjI4fQ.Een91NlCu_uOi4lFPC8oeGkjYbt9Infnm36lgHSVGyM
+
+### Delete Order (Admin)
+DELETE http://localhost:5518/admin/orders/68a9e29d328b2394552e816e
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjA0ODYyOCwiZXhwIjoxNzU2MDUyMjI4fQ.Een91NlCu_uOi4lFPC8oeGkjYbt9Infnm36lgHSVGyM
+
+
+### ----------------------------
+### Owner Endpoints
+### ----------------------------
+GET http://localhost:5518/owner/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTk2MDgwMSwiZXhwIjoxNzU1OTY0NDAxfQ.L85aefI6V3Eqy-RKeqoyfiu2DCcjtFuHnVjunTs83wY
+
+### Change Order Status (Owner)
+PUT http://localhost:5518/owner/orders/status
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTk2MDgwMSwiZXhwIjoxNzU1OTY0NDAxfQ.L85aefI6V3Eqy-RKeqoyfiu2DCcjtFuHnVjunTs83wY
+
+{
+  "orderId": "68a9dcd5701e3bc6ace28e2b",
+  "newStatus": "preparing"
+} 
+
+### Get Order Details (Owner)
+GET http://localhost:5518/owner/orders/details/68aae4b0cd7db4ca639d0579
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTk2MDgwMSwiZXhwIjoxNzU1OTY0NDAxfQ.L85aefI6V3Eqy-RKeqoyfiu2DCcjtFuHnVjunTs83wY
+
+### Delete Order (Owner)
+DELETE http://localhost:5518/owner/orders/68a9dcd5701e3bc6ace28e2b
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTk2MDgwMSwiZXhwIjoxNzU1OTY0NDAxfQ.L85aefI6V3Eqy-RKeqoyfiu2DCcjtFuHnVjunTs83wY

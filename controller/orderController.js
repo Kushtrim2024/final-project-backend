@@ -1,12 +1,51 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import Order from "../models/Order.js";
 import Users from "../models/User.js";
 import Restaurant from "../models/Restaurant.js";
 import MenuItem from "../models/MenuItem.js";
-import Order from "../models/Order.js";
 
 
 // ---------------- ORDERS ----------------
+
+//Get Orders
+
+// Controller: Alle Orders abrufen
+export const getAllOrders = async (req, res) => {
+  try {
+    const user = req.user;
+    let orders;
+
+    if (user.role === "admin") {
+      // Admin sieht alle Orders
+      orders = await Order.find()
+        .populate("userId", "name email phone")
+        .populate("restaurantId", "name address phone")
+        .populate("items.productId", "name basePrice");
+    } else if (user.role === "restaurant") {
+      // Restaurant Owner sieht nur Orders seines Restaurants
+      if (!user.restaurantId) {
+        return res.status(400).json({ message: "Restaurant ID not assigned to user" });
+      }
+
+      orders = await Order.find({ restaurantId: user.restaurantId })
+        .populate("userId", "name email phone")
+        .populate("items.productId", "name basePrice");
+    } else if (user.role === "user") {
+      // User sieht nur seine eigenen Orders
+      orders = await Order.find({ userId: user._id })
+        .populate("restaurantId", "name address phone")
+        .populate("items.productId", "name basePrice");
+    } else {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
 // Place Order
 export const placeOrder = async (req, res) => {
@@ -26,18 +65,50 @@ export const placeOrder = async (req, res) => {
       const menuItem = await MenuItem.findById(cartItem.menuItemId);
       if (!menuItem) continue;
 
+      // ✅ Calculate price
+      let itemPrice = 0;
+
+      // Base price
+      if (menuItem.basePrice) {
+        itemPrice += menuItem.basePrice;
+      }
+
+      // Selected size (optional)
+      if (cartItem.sizeLabel) {
+        const selectedSize = menuItem.sizes.find(s => s.label === cartItem.sizeLabel);
+        if (selectedSize) {
+          itemPrice += selectedSize.price;
+        }
+      }
+
+      // Selected addOns (optional)
+      if (cartItem.addOns && cartItem.addOns.length > 0) {
+        for (const addOnId of cartItem.addOns) {
+          const selectedAddOn = menuItem.addOns.id(addOnId); // using subdocument _id
+          if (selectedAddOn) {
+            itemPrice += selectedAddOn.price;
+          }
+        }
+      }
+
+      const itemTotal = itemPrice * cartItem.quantity;
+
       items.push({
         productId: menuItem._id,
         name: menuItem.name,
         quantity: cartItem.quantity,
-        price: menuItem.price,
+        size: cartItem.sizeLabel || null,
+        addOns: cartItem.addOns || [],
+        price: itemPrice,
+        total: itemTotal,
       });
 
-      total += menuItem.price * cartItem.quantity;
+      total += itemTotal;
     }
 
     const order = new Order({
       userId,
+      restaurantId,
       customerName: customerName || user.name,
       phone: phone || user.phone,
       address,
@@ -51,69 +122,96 @@ export const placeOrder = async (req, res) => {
 
     await order.save();
 
+    // Clear cart (if you want persistent carts, remove these two lines)
     user.cart = [];
     await user.save();
 
     res.status(201).json({ message: "Order placed successfully", order });
   } catch (error) {
     console.error("Error placing order:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// Get Order History
+
 export const getOrderHistory = async (req, res) => {
-  try {
-    const { userId } = req.params;
-
-    const user = await Users.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const orders = await Order.find({ userId })
-      .populate("restaurantId")
-      .populate("items.menuItemId");
-
-    res.status(200).json({ orders });
-  } catch (error) {
-    console.error("Error fetching order history:", error);
-    res.status(500).json({ message: "Server error" });
-  }
+  const userId = req.user.id;
+  const orders = await Order.find({ userId }).populate("restaurantId").populate("items.productId");
+  res.status(200).json({ orders });
 };
 
-// Get Order Details
+
+// Order Details
 export const getOrderDetails = async (req, res) => {
   try {
-    const { orderId } = req.params;
+    const orderId = req.params.id;
+    const user = req.user;
 
     const order = await Order.findById(orderId)
-      .populate("items.productId")
-      .populate("actions.updatedBy");
+      .populate("userId", "name email phone")
+      .populate("restaurantId", "name address phone")
+      .populate("items.productId", "name basePrice");
 
     if (!order) return res.status(404).json({ message: "Order not found" });
 
-    res.status(200).json({ order });
+    // Rollenbasierte Zugriffskontrolle
+    if (user.role === "user" && order.userId._id.toString() !== user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized to view this order" });
+    } else if (user.role === "restaurant" && order.restaurantId._id.toString() !== user.restaurantId.toString()) {
+      return res.status(403).json({ message: "Not authorized to view this order" });
+    }
+    // Admin darf alles sehen → keine Einschränkung nötig
+
+    res.status(200).json(order);
   } catch (error) {
     console.error("Error fetching order details:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// Update Order Status
-export const updateOrderStatus = async (orderId, newStatus, userId = null) => {
-  const allowedStatuses = ["pending", "confirmed", "preparing", "out_for_delivery", "delivered", "cancelled"];
-  if (!allowedStatuses.includes(newStatus)) {
+// Valid statuses
+const VALID_STATUSES = [
+  "pending",
+  "confirmed",
+  "preparing",
+  "out_for_delivery",
+  "ready",
+  "delivered",
+  "cancelled"
+];
+
+// Business-Logik zum Status ändern
+export const updateOrderStatus = async (orderId, newStatus, user) => {
+  if (!VALID_STATUSES.includes(newStatus)) {
     throw new Error("Invalid status");
   }
 
   const order = await Order.findById(orderId);
   if (!order) throw new Error("Order not found");
 
+  // Berechtigungsprüfung
+  if (user.role === "user") {
+    // Kunde darf nur seine eigene Bestellung stornieren
+    if (
+      newStatus !== "cancelled" ||
+      order.userId.toString() !== user._id.toString() ||
+      ["delivered", "cancelled"].includes(order.status)
+    ) {
+      throw new Error("Not authorized to update this order");
+    }
+  } else if (user.role === "restaurant") {
+    // Owner darf nur Bestellungen seines Restaurants ändern
+    if (order.restaurantId.toString() !== user.restaurantId?.toString()) {
+      throw new Error("Not authorized to update this order");
+    }
+  }
+  // Admin darf alles, keine Einschränkung nötig
+
+  // Status aktualisieren
   order.status = newStatus;
   order.actions.push({
     status: newStatus,
-    updatedBy: userId,
+    updatedBy: user._id,
     timestamp: new Date(),
   });
 
@@ -121,19 +219,25 @@ export const updateOrderStatus = async (orderId, newStatus, userId = null) => {
   return order;
 };
 
-// Change Order Status from Owner/Admin
+// Controller
 export const changeOrderStatus = async (req, res) => {
   try {
-    const { orderId, newStatus, adminId } = req.body;
+    const { orderId, newStatus } = req.body;
+    const user = req.user;
 
-    const order = await updateOrderStatus(orderId, newStatus, adminId);
+    const updatedOrder = await updateOrderStatus(orderId, newStatus, user);
 
-    res.status(200).json({ message: "Order status updated", order });
+    res.status(200).json({
+      message: "Order status updated successfully",
+      order: updatedOrder,
+    });
   } catch (error) {
     console.error("Error updating order status:", error);
-    res.status(500).json({ message: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
+
+
 
 // Cancel Order
 export const cancelOrder = async (req, res) => {
@@ -143,6 +247,11 @@ export const cancelOrder = async (req, res) => {
     const order = await Order.findById(orderId);
     if (!order) return res.status(404).json({ message: "Order not found" });
 
+    // Prüfen, ob restaurantId existiert
+    if (!order.restaurantId) {
+      return res.status(400).json({ message: "Invalid order: missing restaurantId" });
+    }
+
     order.status = "cancelled";
     order.actions.push({ status: "cancelled", updatedBy: req.user?.id });
     await order.save();
@@ -150,27 +259,10 @@ export const cancelOrder = async (req, res) => {
     res.status(200).json({ message: "Order cancelled successfully", order });
   } catch (error) {
     console.error("Error cancelling order:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// Update Order (general updates)
-export const updateOrder = async (req, res) => {
-  try {
-    const { orderId, updates } = req.body;
-
-    const order = await Order.findById(orderId);
-    if (!order) return res.status(404).json({ message: "Order not found" });
-
-    Object.assign(order, updates);
-    await order.save();
-
-    res.status(200).json({ message: "Order updated successfully", order });
-  } catch (error) {
-    console.error("Error updating order:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
 
 // Delete Order
 export const deleteOrder = async (req, res) => {
@@ -184,22 +276,6 @@ export const deleteOrder = async (req, res) => {
     res.status(200).json({ message: "Order deleted successfully" });
   } catch (error) {
     console.error("Error deleting order:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// Get all orders (for admin only)
-export const getAllOrders = async (req, res) => {
-  try {
-    const orders = await Order.find()
-      .populate("userId", "name email")       // only useful fields
-      .populate("restaurantId", "name")       // only restaurant name
-      .populate("items.productId", "name price")
-      .populate("actions.updatedBy", "name role");
-
-    res.status(200).json({ orders });
-  } catch (error) {
-    console.error("Error fetching all orders:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

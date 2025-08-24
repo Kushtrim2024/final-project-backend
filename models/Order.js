@@ -8,6 +8,11 @@ const OrderSchema = new mongoose.Schema(
       ref: "User",
       required: false, // falls Gastbestellungen erlaubt
     },
+restaurantId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Restaurant",   // must match your Restaurant model name
+  required: true,
+},
 
     // Kundeninfos (auch bei registrierten Usern redundant speichern)
     customerName: {
@@ -31,19 +36,16 @@ const OrderSchema = new mongoose.Schema(
     // Bestell-Details
     items: [
   {
-    productId: { type: mongoose.Schema.Types.ObjectId, ref: "MenuItem" },
-    name: { type: String, required: true },
-    quantity: { type: Number, required: true, min: 1 },
-    price: { type: Number, required: true },
-    size: { type: String },
-    addOns: [
-      {
-        name: String,
-        price: Number,
-      }
-    ]
-  }
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: "MenuItem", required: true },
+    name: String,
+    quantity: Number,
+    price: Number,
+    total: Number,
+    size: String,
+    addOns: [mongoose.Schema.Types.ObjectId],
+  },
 ],
+
 
     total: {
       type: Number,
@@ -73,7 +75,7 @@ const OrderSchema = new mongoose.Schema(
     // Status der Bestellung
     status: {
       type: String,
-      enum: ["pending", "confirmed", "preparing", "out_for_delivery", "delivered", "cancelled"],
+      enum: ["pending", "confirmed", "preparing","ready", "out_for_delivery", "delivered", "cancelled"],
       default: "pending",
     },
 
