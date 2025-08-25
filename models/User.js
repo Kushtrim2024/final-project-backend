@@ -12,8 +12,19 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true, lowercase: true, trim: true },
   password: { type: String, required: true },
   phone: { type: String },
-  addresses: { type: [addressSchema], default: [] }, // mehrere Adressen
+  addresses: { type: [addressSchema], default: [] },
   role: { type: String, default: "user" },
+
+  cart: {
+    type: [
+      {
+        menuItemId: { type: mongoose.Schema.Types.ObjectId, ref: "MenuItem" },
+        quantity: { type: Number, required: true },
+      },
+    ],
+    default: [],
+  },
 });
+
 
 export default mongoose.model("User", userSchema, "users");

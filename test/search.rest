@@ -1,3 +1,7 @@
+### Get All Restaurants
+GET http://localhost:5518/restaurants
+Content-Type: application/json
+
 ### Search for Restaurants by Name
 GET http://localhost:5517/restaurants/search?name=Bode
 Content-Type: application/json
@@ -12,4 +16,16 @@ Content-Type: application/json
 
 ### Search Restaurants by location
 GET http://localhost:5517/restaurants/location?lat=-24.8467&lng=-84.271
+Content-Type: application/json
+
+### Get restaurant by ID
+GET http://localhost:5518/restaurants/68a23988bb5b07bed06d81a4
+Content-Type: application/json
+
+### Get Menu Items for a Restaurant
+GET http://localhost:5518/restaurants/68a23988bb5b07bed06d81a4/products
+Content-Type: application/json  
+
+### Get Product by ID
+GET http://localhost:5518/restaurants/68a23988bb5b07bed06d81a4/products/68a23988bb5b07bed06d85c8
 Content-Type: application/json

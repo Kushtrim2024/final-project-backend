@@ -6,7 +6,7 @@ import MenuItem from "../models/MenuItem.js";
 
 const MONGODB_URI = process.env.DB_MONGO_URI
 
-const categories = ["Starters", "Main Courses", "Desserts", "Drinks", "Specials"];
+const categories = ["Burger", "Doner", "Chicken", "Pizza", "Sushi", "Dessert", "Pasta", "Salad", "Vegan", "Vegetarian","Seafood", "Drinks"];
 
 function randomHours() {
   const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
