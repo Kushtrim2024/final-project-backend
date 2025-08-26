@@ -8,13 +8,13 @@ const OrderSchema = new mongoose.Schema(
       ref: "User",
       required: false, // falls Gastbestellungen erlaubt
     },
-restaurantId: {
-  type: mongoose.Schema.Types.ObjectId,
-  ref: "Restaurant",   // must match your Restaurant model name
-  required: true,
-},
+    restaurantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Restaurant", // muss mit deinem Restaurant-Model übereinstimmen
+      required: true,
+    },
 
-    // Kundeninfos (auch bei registrierten Usern redundant speichern)
+    // Kundeninfos
     customerName: {
       type: String,
       required: true,
@@ -35,17 +35,20 @@ restaurantId: {
 
     // Bestell-Details
     items: [
-  {
-    productId: { type: mongoose.Schema.Types.ObjectId, ref: "MenuItem", required: true },
-    name: String,
-    quantity: Number,
-    price: Number,
-    total: Number,
-    size: String,
-    addOns: [mongoose.Schema.Types.ObjectId],
-  },
-],
-
+      {
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "MenuItem",
+          required: true,
+        },
+        name: String,
+        quantity: Number,
+        price: Number,
+        total: Number,
+        size: String,
+        addOns: [mongoose.Schema.Types.ObjectId],
+      },
+    ],
 
     total: {
       type: Number,
@@ -63,8 +66,13 @@ restaurantId: {
     // Zahlungsinfos
     paymentMethod: {
       type: String,
-      enum: ["card", "online"],
+      enum: ["card", "paypal", "applepay", "googlepay"],
       required: true,
+    },
+    paymentDetails: {
+      cardType: { type: String, enum: ["visa", "mastercard", "maestro", "amex", "discover", "other"], required: false },
+      last4: { type: String, required: false }, // nur die letzten 4 Ziffern
+      transactionId: { type: String, required: false }, // z. B. bei PayPal/ApplePay
     },
     paymentStatus: {
       type: String,
@@ -75,7 +83,7 @@ restaurantId: {
     // Status der Bestellung
     status: {
       type: String,
-      enum: ["pending", "confirmed", "preparing","ready", "out_for_delivery", "delivered", "cancelled"],
+      enum: ["pending", "confirmed", "preparing", "ready", "out_for_delivery", "delivered", "cancelled"],
       default: "pending",
     },
 

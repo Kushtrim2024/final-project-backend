@@ -89,12 +89,25 @@ export const viewCart = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+// ✅ Hilfsfunktion: Kartentyp automatisch erkennen
+function detectCardType(cardNumber) {
+  const num = cardNumber.replace(/\D/g, ""); // nur Ziffern behalten
 
+  if (/^4/.test(num)) return "visa";
+  if (/^(5[1-5]|2[2-7])/.test(num)) return "mastercard";
+  if (/^(50|5[6-9]|6[0-9])/.test(num)) return "maestro";
+  if (/^3[47]/.test(num)) return "amex";
+  if (/^(6011|65|64[4-9]|622)/.test(num)) return "discover";
+
+  return "other";
+}
+
+// --------------------
 // Choose payment method (pro Cart gespeichert)
 export const choosePaymentMethod = async (req, res) => {
   try {
     const { userId, paymentMethod } = req.body;
-    const allowedMethods = ["card", "online"];
+    const allowedMethods = ["card", "paypal", "applepay", "googlepay"];
 
     if (!allowedMethods.includes(paymentMethod)) {
       return res.status(400).json({ message: "Invalid payment method" });
@@ -103,47 +116,83 @@ export const choosePaymentMethod = async (req, res) => {
     // Finde oder erstelle den Warenkorb
     let cart = await Cart.findOne({ userId });
     if (!cart) {
-      // Optional: Erstelle neuen Cart, falls noch keiner existiert
       cart = new Cart({ userId, items: [], paymentMethod });
       await cart.save();
-      return res.status(200).json({ message: "Payment method set on new cart", paymentMethod, cart });
+      return res.status(200).json({
+        message: "Payment method set on new cart",
+        paymentMethod,
+        cart
+      });
     }
 
     // Update Payment Method
     cart.paymentMethod = paymentMethod;
     await cart.save();
 
-    res.status(200).json({ message: "Payment method updated successfully", paymentMethod, cart });
+    res.status(200).json({
+      message: "Payment method updated successfully",
+      paymentMethod,
+      cart
+    });
   } catch (error) {
     console.error("Error choosing payment method:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-
+// --------------------
+// Checkout
 // Checkout
 export const checkout = async (req, res) => {
   try {
-    const { userId, restaurantId, customerName, phone, address, deliveryType, paymentMethod, paymentDetails } = req.body;
+    const {
+      userId,
+      restaurantId,
+      customerName,
+      phone,
+      address,
+      deliveryType,
+      paymentMethod,
+      paymentDetails
+    } = req.body;
 
-    const allowedMethods = ["card", "online"];
+    const allowedMethods = ["card", "paypal", "applepay", "googlepay"];
     if (!allowedMethods.includes(paymentMethod)) {
       return res.status(400).json({ message: "Invalid payment method" });
     }
 
+    // Wenn Karte: Typ automatisch ermitteln
+    let cardType = null;
+    let last4 = null;
+    if (paymentMethod === "card") {
+      if (!paymentDetails || !paymentDetails.cardNumber) {
+        return res.status(400).json({ message: "Card number required" });
+      }
+
+      cardType = detectCardType(paymentDetails.cardNumber);
+      if (cardType === "other") {
+        return res.status(400).json({ message: "Unsupported card type" });
+      }
+
+      // ✅ Nur die letzten 4 Ziffern speichern
+      last4 = paymentDetails.cardNumber.slice(-4);
+    }
+
+    // Warenkorb laden
     const cart = await Cart.findOne({ userId }).populate("items.menuItem");
     if (!cart || cart.items.length === 0) {
       return res.status(400).json({ message: "Cart is empty" });
     }
 
+    // OrderItems aus Warenkorb zusammenstellen
     const orderItems = cart.items.map(item => {
       const menuItem = item.menuItem;
       return {
         productId: menuItem ? menuItem._id : null,
         name: menuItem ? menuItem.name : "Deleted Item",
         quantity: item.quantity,
-        price: menuItem.price,        // single unit price
-        total: item.totalPrice,       // qty * price
+        price: menuItem.price,
+        total: item.totalPrice,
         size: item.size || null,
         addOns: item.addOns?.map(a => ({
           name: a.name,
@@ -152,38 +201,31 @@ export const checkout = async (req, res) => {
       };
     });
 
-    const total = orderItems.reduce((sum, item) => sum + item.total, 0);
-
-
-    const paymentSuccess = true; 
-    const paymentStatus = paymentSuccess ? "paid" : "failed";
-
+    // ✅ Bestellung speichern (nur Kartentyp + letzte 4 Ziffern)
     const order = new Order({
-      userId: userId || undefined,
+      userId,
       restaurantId,
       customerName,
       phone,
-      address: deliveryType === "delivery" ? address : undefined,
+      address,
       deliveryType,
       paymentMethod,
-      paymentStatus,
-      items: orderItems,
-      total,
-      status: "pending",
-      actions: [{ status: "pending", updatedBy: userId || null }],
+      paymentDetails: paymentMethod === "card"
+        ? { cardType, last4 }
+        : paymentDetails, // PayPal, ApplePay, GooglePay etc. können ggf. andere Details haben
+      items: orderItems
     });
-
     await order.save();
 
+    // ✅ Warenkorb leeren nach Bestellung
     cart.items = [];
     await cart.save();
 
     res.status(200).json({ message: "Checkout successful", order });
   } catch (error) {
     console.error("Error during checkout:", error);
-    res.status(500).json({ 
-      message: error.message,
-      stack: error.stack 
-    });
+    res.status(500).json({ message: "Server error" });
   }
 };
+
+

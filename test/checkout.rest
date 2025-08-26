@@ -1,0 +1,85 @@
+###  Choose payment method - Karte
+POST http://localhost:5517/cart/choose-payment
+Content-Type: application/json
+
+{
+  "userId": "64f8a2b4c1234567890abcd1",
+  "paymentMethod": "card"
+}
+
+###  Choose payment method - PayPal
+POST http://localhost:5517/cart/choose-payment
+Content-Type: application/json
+
+{
+  "userId": "64f8a2b4c1234567890abcd1",
+  "paymentMethod": "paypal"
+}
+
+###  Checkout - Karte (Visa)
+POST http://localhost:5517/cart/checkout
+Content-Type: application/json
+
+{
+  "userId": "64f8a2b4c1234567890abcd1",
+  "restaurantId": "64f8a2b4c1234567890abcd2",
+  "customerName": "Max Mustermann",
+  "phone": "0123456789",
+  "address": "Musterstraße 1, 12345 Stadt",
+  "deliveryType": "delivery",
+  "paymentMethod": "card",
+  "paymentDetails": {
+    "cardNumber": "4111111111111111"
+  }
+}
+
+###  Checkout - PayPal
+POST http://localhost:5517/cart/checkout
+Content-Type: application/json
+
+{
+  "userId": "64f8a2b4c1234567890abcd1",
+  "restaurantId": "64f8a2b4c1234567890abcd2",
+  "customerName": "Max Mustermann",
+  "phone": "0123456789",
+  "address": "Musterstraße 1, 12345 Stadt",
+  "deliveryType": "delivery",
+  "paymentMethod": "paypal",
+  "paymentDetails": {
+    "transactionId": "PAYPAL123456789"
+  }
+}
+
+###  Checkout - Fehler: leere Karte
+POST http://localhost:5517/cart/checkout
+Content-Type: application/json
+
+{
+  "userId": "64f8a2b4c1234567890abcd1",
+  "restaurantId": "64f8a2b4c1234567890abcd2",
+  "customerName": "Max Mustermann",
+  "phone": "0123456789",
+  "address": "Musterstraße 1, 12345 Stadt",
+  "deliveryType": "delivery",
+  "paymentMethod": "card",
+  "paymentDetails": {
+    "cardNumber": ""
+  }
+}
+
+###  Checkout - Fehler: ungültiger Kartentyp
+POST http://localhost:5517/cart/checkout
+Content-Type: application/json
+
+{
+  "userId": "64f8a2b4c1234567890abcd1",
+  "restaurantId": "64f8a2b4c1234567890abcd2",
+  "customerName": "Max Mustermann",
+  "phone": "0123456789",
+  "address": "Musterstraße 1, 12345 Stadt",
+  "deliveryType": "delivery",
+  "paymentMethod": "card",
+  "paymentDetails": {
+    "cardNumber": "9999999999999999"
+  }
+}
