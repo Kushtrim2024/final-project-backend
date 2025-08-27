@@ -29,10 +29,10 @@ export const getMenuItemById = async (req, res) => {
 // Create menu item
 export const createMenuItem = async (req, res) => {
   const { restaurantId } = req.params;
-  let { name, description, category, sizes, addOns, basePrice } = req.body;
+  let { name, description = "", category, sizes, addOns, basePrice } = req.body;
 
   try {
-    // Strings -> Arrays parsen
+    // Strings → Arrays
     if (typeof sizes === "string") sizes = JSON.parse(sizes);
     if (typeof addOns === "string") addOns = JSON.parse(addOns);
 
@@ -40,15 +40,19 @@ export const createMenuItem = async (req, res) => {
     let images = [];
     if (req.files?.length) {
       const results = await Promise.all(
-        req.files.map(f => uploadBufferToCloudinary(f.buffer, { folder: "menuItems" }))
+        req.files.map(f =>
+          uploadBufferToCloudinary(f.buffer, { folder: "uploads/menu" })
+        )
       );
       images = results.map(r => r.secure_url);
     } else if (req.file) {
-      const r = await uploadBufferToCloudinary(req.file.buffer, { folder: "menuItems" });
+      const r = await uploadBufferToCloudinary(req.file.buffer, { folder: "uploads/menu" });
       images = [r.secure_url];
+    } else {
+      images = ["default_menu.png"]; // Fallback
     }
 
-    // Business-Regeln nach Kategorie prüfen
+    // Business-Logik
     if (category.toLowerCase() === "pizza") {
       if (!sizes || sizes.length === 0) {
         return res.status(400).json({ message: "Pizza items require sizes with prices" });
@@ -59,6 +63,7 @@ export const createMenuItem = async (req, res) => {
       }
     }
 
+    // Menüitem erstellen
     const newMenuItem = await MenuItem.create({
       restaurantId,
       name,
@@ -72,7 +77,7 @@ export const createMenuItem = async (req, res) => {
 
     res.status(201).json(newMenuItem);
   } catch (error) {
-    console.error("Error creating product:", error);
+    console.error("Error creating menu item:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

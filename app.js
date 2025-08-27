@@ -20,12 +20,12 @@ import cartRouter from "./router/cartRouter.js";
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 5518;
+const PORT = process.env.PORT || 5517;
 
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:5518"], // Frontend
+    origin: ["http://localhost:3000", "http://localhost:5517"], // Frontend
     credentials: true,
   })
 );

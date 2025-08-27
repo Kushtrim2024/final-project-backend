@@ -61,6 +61,33 @@ export const profile = async (req, res) => {
   }
 };
 
+// Profilbild hochladen (optional)
+
+export const uploadProfilePicture = async (req, res) => {
+   try {
+    const user = await User.findById(req.params.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+
+    // Altes Bild löschen (falls nicht default)
+    if (user.profilePicture && user.profilePicture !== "default.png") {
+      await deleteFromCloudinary(user.profilePicture);
+    }
+
+    const result = await uploadBufferToCloudinary(req.file.buffer, {
+      folder: "uploads/profile",
+    });
+
+    user.profilePicture = result.secure_url;
+    await user.save();
+
+    res.json({ message: "Profile picture changed", url: user.profilePicture });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};  
+
 export const updateUserProfile = async (req, res) => {
   try {
     const { name, email, phone} = req.body;
