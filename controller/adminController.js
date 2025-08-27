@@ -258,25 +258,73 @@ export const deleteRestaurantOwner = async (req, res) => {
   }
 };
 
-// Update restaurant status
-// This function allows an admin to change the status of a restaurant
 export const updateRestaurantStatus = async (req, res) => {
   try {
     const { status } = req.body;
     if (!["active", "inactive"].includes(status)) {
       return res.status(400).json({ message: "Invalid status" });
     }
-
-    const restaurant = await Restaurant.findByIdAndUpdate(
+    const owner = await RestaurantOwner.findByIdAndUpdate(
       req.params.id,
       { status },
       { new: true }
     );
-
-    if (!restaurant) return res.status(404).json({ message: "Restaurant not found" });
-
-    res.status(200).json({ message: "Status updated", restaurant });
+    if (!owner)
+      return res.status(404).json({ message: "Restaurant owner not found" });
+    res.status(200).json({ message: "Status updated", owner });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+export const updateRestaurantOwner = async (req, res) => {
+  try {
+    const allowed = [
+      "restaurantName",
+      "name",
+      "email",
+      "phone",
+      "website",
+      "taxNumber",
+      "document",
+      "image",
+      "logo",
+      "description",
+      "address",
+      "status",
+    ];
+    const update = {};
+    for (const k of allowed) {
+      if (Object.prototype.hasOwnProperty.call(req.body, k)) {
+        update[k] = req.body[k];
+      }
+    }
+ 
+    if (update.logo && !update.image) update.image = update.logo;
+ 
+    if (update.document && !update.document) {
+      update.document = update.document;
+      delete update.document;
+    }
+
+    const owner = await RestaurantOwner.findByIdAndUpdate(
+      req.params.id,
+      { $set: update },
+      { new: true, runValidators: true, context: "query" }
+    );
+    if (!owner)
+      return res.status(404).json({ message: "Restaurant owner not found" });
+    res.status(200).json(owner);
+  } catch (err) {
+    console.error("updateRestaurantOwner error:", err);
+    if (err && err.code === 11000) {
+      return res
+        .status(409)
+        .json({ message: "Duplicate key", keyValue: err.keyValue });
+    }
+    if (err?.name === "ValidationError" || err?.name === "CastError") {
+      return res.status(400).json({ message: err.message });
+    }
+    return res.status(500).json({ message: "Server error" });
   }
 };

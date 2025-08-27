@@ -20,7 +20,7 @@ const RestaurantSchema = new mongoose.Schema(
       ref: "restaurant",
       required: true,
     },
-    status: { type: String, enum: ["active", "inactive"], default: "inactive" }, // Admin kann ändern
+  
 
     image: { type: String, trim: true },
     logo: { type: String, trim: true },

@@ -1,5 +1,6 @@
 
 import Restaurant from "../models/Restaurant.js";
+import { uploadBufferToCloudinary } from "../utils/cloudinaryUpload.js";
 
 
 // Get all restaurants
@@ -36,16 +37,29 @@ export const createRestaurant = async (req, res) => {
     address,
     phone, 
     email, 
-    website,
-    image,
-    logo
+    website
   } = req.body;
 
   if (!restaurantName || !description || !address || !phone || !email) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
+  let image = "default_restaurant.png"; // Fallback 
+  let logo = "default_logo.png"; // Fallback
+
   try {
+    // Bild hochladen
+    if (req.files?.image) {
+      const r = await uploadBufferToCloudinary(req.files.image[0].buffer, { folder: "uploads/restaurants" });
+      image = r.secure_url;
+    }
+
+    // Logo hochladen
+    if (req.files?.logo) {
+      const r = await uploadBufferToCloudinary(req.files.logo[0].buffer, { folder: "uploads/restaurants" });
+      logo = r.secure_url;
+    }
+
     const newRestaurant = new Restaurant({
       restaurantName,
       description,
@@ -53,9 +67,9 @@ export const createRestaurant = async (req, res) => {
       phone,
       email,
       website,
-      image: image || "",
-      logo: logo || "",
-      ownerId: req.user.id
+      image,
+      logo,
+      ownerId: req.user.id,
     });
 
     await newRestaurant.save();
@@ -65,6 +79,7 @@ export const createRestaurant = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 // Update restaurant details
 // This function allows restaurant owners to update their restaurant details
@@ -114,16 +129,26 @@ export const updateRestaurant = async (req, res) => {
     let restaurant;
 
     if (req.params.id && req.user.role === "admin") {
-      // Admin: beliebiges Restaurant über ID
       restaurant = await Restaurant.findById(req.params.id);
       if (!restaurant) return res.status(404).json({ message: "Restaurant not found" });
     } else {
-      // Owner: nur eigenes Restaurant
       restaurant = await Restaurant.findOne({ ownerId: req.user.id });
       if (!restaurant) return res.status(404).json({ message: "Restaurant not found" });
     }
 
-    const { hours, categories, tags, image, gallery, location, ratings, socialLinks, restaurantName, description, phone, email, website } = req.body;
+    const { hours, categories, tags, restaurantName, description, phone, email, website, location, ratings, socialLinks } = req.body;
+
+    // Upload Image
+    if (req.files?.image) {
+      const r = await uploadBufferToCloudinary(req.files.image[0].buffer, { folder: "uploads/restaurants" });
+      restaurant.image = r.secure_url;
+    }
+
+    // Upload Logo
+    if (req.files?.logo) {
+      const r = await uploadBufferToCloudinary(req.files.logo[0].buffer, { folder: "uploads/restaurants" });
+      restaurant.logo = r.secure_url;
+    }
 
     // Öffnungszeiten
     if (hours) {
@@ -140,25 +165,14 @@ export const updateRestaurant = async (req, res) => {
     // Sonstige Felder
     if (categories) restaurant.categories = categories;
     if (tags) restaurant.tags = tags;
-    if (image) restaurant.image = image;
-    if (gallery) restaurant.gallery = gallery;
     if (restaurantName) restaurant.restaurantName = restaurantName;
     if (description) restaurant.description = description;
     if (phone) restaurant.phone = phone;
     if (email) restaurant.email = email;
     if (website) restaurant.website = website;
-
-    if (location?.coordinates?.length === 2) {
-      restaurant.location = { type: "Point", coordinates: location.coordinates };
-    }
-
-    if (ratings && Array.isArray(ratings)) {
-      restaurant.ratings = ratings;
-    }
-
-    if (socialLinks) {
-      restaurant.socialLinks = { ...restaurant.socialLinks, ...socialLinks };
-    }
+    if (location?.coordinates?.length === 2) restaurant.location = { type: "Point", coordinates: location.coordinates };
+    if (ratings && Array.isArray(ratings)) restaurant.ratings = ratings;
+    if (socialLinks) restaurant.socialLinks = { ...restaurant.socialLinks, ...socialLinks };
 
     await restaurant.save();
     res.status(200).json({ message: "Restaurant updated successfully", restaurant });
@@ -168,7 +182,6 @@ export const updateRestaurant = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 // Delete a restaurant
 export const deleteRestaurant = async (req, res) => {
@@ -216,7 +229,7 @@ export const deleteMyRestaurant = async (req, res) => {
 
 
 export const getRestaurantsByCategory = async (req, res) => {
-  const { category } = req.query; // Query-Parameter statt req.params
+  const { category } = req.query;
   if (!category) return res.status(400).json({ message: "Query parameter is required" });
 
   try {
@@ -255,7 +268,7 @@ export const searchRestaurants = async (req, res) => {
 
 // Get restaurants by postal code
 export const getRestaurantsByPostCode = async (req, res) => {
-  const { postcode } = req.query;  // Query statt params
+  const { postcode } = req.query;
   if (!postcode) {
     return res.status(400).json({ message: "Postal code is required" });
   }

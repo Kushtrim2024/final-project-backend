@@ -16,6 +16,7 @@ const restaurantOwnerSchema = new mongoose.Schema({
   document: { type: String, required: true }, 
   website: { type: String, required: true, trim: true },
   role: { type: String, default: "restaurant" },
+    status: { type: String, enum: ["active", "inactive"], default: "inactive" }, // Admin kann ändern
 });
 
 export default mongoose.model("RestaurantOwner", restaurantOwnerSchema, "restaurantOwners");
