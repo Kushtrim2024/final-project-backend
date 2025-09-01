@@ -2,16 +2,42 @@ import MenuItem from "../models/MenuItem.js";
 import { uploadBufferToCloudinary } from "../utils/cloudinaryUpload.js";
 
 // Get products for a restaurant
+// Get menu items for a restaurant, grouping pizzas by name with sizes
 export const getMenuItems = async (req, res) => {
   try {
     const { restaurantId } = req.params;
     const menuItems = await MenuItem.find({ restaurantId }).lean();
-    res.status(200).json(menuItems);
+
+    const groupedMenu = {};
+
+    menuItems.forEach(item => {
+      const category = item.category;
+
+      if (!groupedMenu[category]) groupedMenu[category] = [];
+
+      if (category.toLowerCase() === "pizza") {
+        // Prüfen, ob Pizza mit diesem Namen schon existiert
+        const existingPizza = groupedMenu[category].find(p => p.name === item.name);
+        if (existingPizza) {
+          existingPizza.sizes.push(...item.sizes);
+        } else {
+          groupedMenu[category].push({
+            ...item,
+            sizes: item.sizes, // Array mit Größen behalten
+          });
+        }
+      } else {
+        groupedMenu[category].push(item);
+      }
+    });
+
+    res.status(200).json(groupedMenu);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching menu items:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 // Get menu item by ID
 export const getMenuItemById = async (req, res) => {
