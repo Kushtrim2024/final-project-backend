@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 import { faker } from "@faker-js/faker";
 import RestaurantOwner from "../models/RestaurantOwner.js";
 import Restaurant from "../models/Restaurant.js";
@@ -64,24 +65,24 @@ async function seed() {
 
     // === Owners erstellen ===
     for (let i = 0; i < 100; i++) {
-      ownersData.push({
-  name: faker.person.fullName(),
-  email: faker.internet.email(),
-  password: "OwnerPW123!",
-  phone: faker.phone.number(),
-  address: {
-    street: faker.location.streetAddress(),
-    city: faker.location.city(),
-    postalCode: faker.location.zipCode(),
-    country: faker.location.country(),
-  },
-  restaurantName: faker.company.name(),
-  taxNumber: faker.finance.accountNumber(),
-  document: faker.system.filePath(),
-  website: faker.internet.url(),
-});
-
-    }
+  const hashedPassword = await bcrypt.hash("OwnerPW123!", 10); // Passwort hashen
+  ownersData.push({
+    name: faker.person.fullName(),
+    email: faker.internet.email(),
+    password: hashedPassword, // <-- gehashte Version speichern
+    phone: faker.phone.number(),
+    address: {
+      street: faker.location.streetAddress(),
+      city: faker.location.city(),
+      postalCode: faker.location.zipCode(),
+      country: faker.location.country(),
+    },
+    restaurantName: faker.company.name(),
+    taxNumber: faker.finance.accountNumber(),
+    document: faker.system.filePath(),
+    website: faker.internet.url(),
+  });
+}
 
     const owners = await RestaurantOwner.insertMany(ownersData);
 

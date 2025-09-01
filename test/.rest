@@ -108,11 +108,11 @@ Content-Type: application/json
 
 ### Restaurant Besitzer login
 
-POST http://localhost:5518/owner/login
+POST http://localhost:5517/owner/login
 Content-Type: application/json
 
 {
-  "email": "melisa_johnston0@hotmail.com",
+  "email": "johnny39@gmail.com",
   "password": "OwnerPW123!"
 }
 
