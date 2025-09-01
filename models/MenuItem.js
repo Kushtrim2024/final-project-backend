@@ -17,10 +17,11 @@ const menuItemSchema = new mongoose.Schema(
       trim: true,
     },
     category: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+  type: String,
+  enum: ["Starters", "Main Courses", "Desserts", "Drinks", "Specials"],
+  required: true,
+},
+
     basePrice: { type: Number, min: 0 },
     sizes: {
       type: [

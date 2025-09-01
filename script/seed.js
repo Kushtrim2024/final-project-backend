@@ -3,10 +3,20 @@ import { faker } from "@faker-js/faker";
 import RestaurantOwner from "../models/RestaurantOwner.js";
 import Restaurant from "../models/Restaurant.js";
 import MenuItem from "../models/MenuItem.js";
+import dotenv from "dotenv";
+dotenv.config();
 
-const MONGODB_URI = process.env.DB_MONGO_URI
 
-const categories = ["Burger", "Doner", "Chicken", "Pizza", "Sushi", "Dessert", "Pasta", "Salad", "Vegan", "Vegetarian","Seafood", "Drinks"];
+const MONGODB_URI = process.env.DB_MONGO_URI;
+
+// Globale Kategorien -> für Restaurants
+const globalCategories = [
+  "Burger", "Doner", "Chicken", "Pizza", "Sushi",
+  "Pasta", "Salad", "Vegan", "Vegetarian", "Seafood"
+];
+
+// Lokale Kategorien -> für Menü-Items innerhalb eines Restaurants
+const localCategories = ["Starters", "Main Courses", "Desserts", "Drinks", "Specials"];
 
 function randomHours() {
   const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
@@ -52,22 +62,30 @@ async function seed() {
     let restaurantsData = [];
     let menuItemsData = [];
 
+    // === Owners erstellen ===
     for (let i = 0; i < 100; i++) {
       ownersData.push({
-        name: faker.person.fullName(),
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-        phone: faker.phone.number(),
-        address: faker.location.streetAddress(),
-        restaurantName: faker.company.name(),
-        taxNumber: faker.finance.accountNumber(),
-        document: faker.system.filePath(),
-        website: faker.internet.url(),
-      });
+  name: faker.person.fullName(),
+  email: faker.internet.email(),
+  password: "OwnerPW123!",
+  phone: faker.phone.number(),
+  address: {
+    street: faker.location.streetAddress(),
+    city: faker.location.city(),
+    postalCode: faker.location.zipCode(),
+    country: faker.location.country(),
+  },
+  restaurantName: faker.company.name(),
+  taxNumber: faker.finance.accountNumber(),
+  document: faker.system.filePath(),
+  website: faker.internet.url(),
+});
+
     }
 
     const owners = await RestaurantOwner.insertMany(ownersData);
 
+    // === Restaurants erstellen ===
     owners.forEach((owner) => {
       restaurantsData.push({
         restaurantName: owner.restaurantName,
@@ -87,7 +105,8 @@ async function seed() {
         deliveryAvailable: faker.datatype.boolean(),
         takeawayAvailable: faker.datatype.boolean(),
         minOrderAmount: faker.number.int({ min: 0, max: 50 }),
-        categories: categories,
+        // Nur 1-3 globale Kategorien
+        categories: faker.helpers.arrayElements(globalCategories, faker.number.int({ min: 1, max: 3 })),
         tags: [faker.word.noun(), faker.word.adjective()],
         location: {
           type: "Point",
@@ -100,14 +119,16 @@ async function seed() {
 
     const restaurants = await Restaurant.insertMany(restaurantsData);
 
+    // === MenuItems erstellen ===
     restaurants.forEach((restaurant) => {
-      categories.forEach((cat) => {
+      localCategories.forEach((cat) => {
         for (let i = 0; i < 30; i++) {
           menuItemsData.push({
             restaurantId: restaurant._id,
             name: faker.commerce.productName(),
             description: faker.lorem.sentence(),
-            category: cat,
+            category: cat, // nur lokale Kategorie
+            basePrice: faker.number.float({ min: 5, max: 25, precision: 0.01 }),
             sizes: [
               { label: "Small", price: faker.number.float({ min: 5, max: 15, precision: 0.01 }) },
               { label: "Medium", price: faker.number.float({ min: 10, max: 25, precision: 0.01 }) },

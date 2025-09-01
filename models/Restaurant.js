@@ -61,7 +61,11 @@ const RestaurantSchema = new mongoose.Schema(
     takeawayAvailable: { type: Boolean, default: false },
     minOrderAmount: { type: Number, default: 0 },
 
-    categories: [String],
+    categories: {
+  type: [String], // z.B. ["Burger", "Pizza", "Seafood"]
+  required: true,
+},
+
     tags: [String],
 
     location: {
