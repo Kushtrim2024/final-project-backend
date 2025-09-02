@@ -64,29 +64,32 @@ export const profile = async (req, res) => {
 // Profilbild hochladen (optional)
 
 export const uploadProfilePicture = async (req, res) => {
-   try {
-    const user = await User.findById(req.params.userId);
+  try {
+    const user = await User.findById(req.user._id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+    // Prüfe, welches File hochgeladen wurde
+    const file = (req.files?.avatar && req.files.avatar[0]) || (req.files?.photo && req.files.photo[0]);
+    if (!file) return res.status(400).json({ message: "No file uploaded" });
 
-    // Altes Bild löschen (falls nicht default)
+    // Altes Bild löschen, falls nicht default
     if (user.profilePicture && user.profilePicture !== "default.png") {
       await deleteFromCloudinary(user.profilePicture);
     }
 
-    const result = await uploadBufferToCloudinary(req.file.buffer, {
+    const result = await uploadBufferToCloudinary(file.buffer, {
       folder: "uploads/profile",
     });
 
     user.profilePicture = result.secure_url;
     await user.save();
 
-    res.json({ message: "Profile picture changed", url: user.profilePicture });
+    res.json({ message: "Photo uploaded", url: user.profilePicture });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-};  
+};
+ 
 
 export const updateUserProfile = async (req, res) => {
   try {
