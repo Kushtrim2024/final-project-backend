@@ -17,16 +17,9 @@ router.put("/profile/update", authMiddleware(["user"]), updateUserProfile);
 router.put("/profile/update-password", authMiddleware(["user"]), updateUserPassword);
 router.delete("/profile/delete", authMiddleware(["user"]), deleteUserAccount);
 
-// Profile image upload
-router.put(
-  "/profile/photo",          
-  authMiddleware(["user"]),
-  upload.fields([
-    { name: "avatar", maxCount: 1 },
-    { name: "photo", maxCount: 1 },
-  ]),
-  uploadProfilePicture
-);
+
+// Profile image upload (NO multer here; express-fileupload is global)
+router.put("/profile/photo", authMiddleware(["user"]), uploadProfilePicture);
 
 // Addresses
 router.post("/profile/addresses", authMiddleware(["user"]), addAddress);
