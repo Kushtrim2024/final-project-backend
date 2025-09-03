@@ -1,5 +1,6 @@
-import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
+import express from "express";
 import cors from "cors";
 import { connectDB } from "./db/mongoose.connect.js";
 
@@ -16,13 +17,20 @@ import orderRouter from "./router/orderRouter.js";
 import restaurantRouter from "./router/restaurantRouter.js";
 import cartRouter from "./router/cartRouter.js";
 
+import fileUpload from "express-fileupload";
+import { v2 as cloudinary } from "cloudinary";
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5517;
 
 app.use(express.json({ limit: "1mb" }));
+app.use(fileUpload({ useTempFiles: true }));
 app.use(
   cors({
     origin: ["http://localhost:3000", "http://localhost:5517"], // Frontend

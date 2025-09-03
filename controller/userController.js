@@ -1,6 +1,13 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import {
+  uploadFileToCloudinary,
+  uploadBufferToCloudinary,
+  extractPublicIdFromUrl,
+  deleteFromCloudinaryByPublicId,
+  deleteFromCloudinaryByUrl,
+} from "../utils/cloudinaryUpload.js";
 
 export const registerUser = async (req, res) => {
   try {
@@ -32,22 +39,27 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ message: "Email and password required" });
+    if (!email || !password)
+      return res.status(400).json({ message: "Email and password required" });
 
     const user = await User.findOne({ email });
     if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
+    if (!isMatch)
+      return res.status(401).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
     res.status(200).json({ message: "Login successful", token, user });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 export const profile = async (req, res) => {
   try {
@@ -68,39 +80,65 @@ export const uploadProfilePicture = async (req, res) => {
     const user = await User.findById(req.user._id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Prüfe, welches File hochgeladen wurde
-    const file = (req.files?.avatar && req.files.avatar[0]) || (req.files?.photo && req.files.photo[0]);
-    if (!file) return res.status(400).json({ message: "No file uploaded" });
+    // express-fileupload puts files on req.files
+    // You configured: app.use(fileUpload({ useTempFiles: true }))
+    // So: file.tempFilePath will exist.
+    const file = (req.files && (req.files.avatar || req.files.photo)) || null;
 
-    // Altes Bild löschen, falls nicht default
-    if (user.profilePicture && user.profilePicture !== "default.png") {
-      await deleteFromCloudinary(user.profilePicture);
+    if (!file) {
+      return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const result = await uploadBufferToCloudinary(file.buffer, {
-      folder: "uploads/profile",
-    });
+    // Delete previous image if exists and not default
+    if (user.profilePicture && user.profilePicture !== "default.png") {
+      try {
+        await deleteFromCloudinaryByUrl(user.profilePicture);
+      } catch (err) {
+        console.warn(
+          "[Cloudinary] Previous image delete failed:",
+          err?.message || err
+        );
+      }
+    }
 
-    user.profilePicture = result.secure_url;
+    let uploaded;
+    if (file.tempFilePath) {
+      // ✅ express-fileupload with temp file path
+      uploaded = await uploadFileToCloudinary(file.tempFilePath, {
+        folder: "uploads/profile",
+        resource_type: "image",
+      });
+    } else if (file.data) {
+      // If useTempFiles:false, you'll have a Buffer at file.data
+      uploaded = await uploadBufferToCloudinary(file.data, {
+        folder: "uploads/profile",
+        resource_type: "image",
+      });
+    } else {
+      return res.status(400).json({ message: "Unsupported file payload" });
+    }
+
+    user.profilePicture = uploaded.secure_url;
     await user.save();
 
-    res.json({ message: "Photo uploaded", url: user.profilePicture });
+    return res.json({ message: "Photo uploaded", url: user.profilePicture });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Upload error:", err);
+    return res.status(500).json({ message: err.message || "Upload error" });
   }
 };
- 
 
 export const updateUserProfile = async (req, res) => {
   try {
-    const { name, email, phone} = req.body;
+    const { name, email, phone } = req.body;
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
-      { name, email, phone},
+      { name, email, phone },
       { new: true, runValidators: true }
     ).select("-password");
 
-    if (!updatedUser) return res.status(404).json({ message: "User not found" });
+    if (!updatedUser)
+      return res.status(404).json({ message: "User not found" });
 
     res.status(200).json(updatedUser);
   } catch (error) {
@@ -132,7 +170,8 @@ export const getDefaultAddress = async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const defaultAddress = user.addresses[0]; // immer erste Adresse
-    if (!defaultAddress) return res.status(404).json({ message: "No addresses found" });
+    if (!defaultAddress)
+      return res.status(404).json({ message: "No addresses found" });
 
     res.status(200).json(defaultAddress);
   } catch (err) {
@@ -155,7 +194,6 @@ export const removeAddress = async (req, res) => {
   }
 };
 
-
 // Passwort ändern
 export const updateUserPassword = async (req, res) => {
   try {
@@ -169,7 +207,8 @@ export const updateUserPassword = async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const isMatch = await bcrypt.compare(currentPassword, user.password);
-    if (!isMatch) return res.status(401).json({ message: "Current password is incorrect" });
+    if (!isMatch)
+      return res.status(401).json({ message: "Current password is incorrect" });
 
     user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
@@ -186,11 +225,12 @@ export const updateUserPassword = async (req, res) => {
 export const deleteUserAccount = async (req, res) => {
   try {
     const deletedUser = await User.findByIdAndDelete(req.user._id);
-    if (!deletedUser) return res.status(404).json({ message: "User not found" });
+    if (!deletedUser)
+      return res.status(404).json({ message: "User not found" });
 
     res.status(200).json({ message: "User account deleted successfully" });
   } catch (error) {
     console.error("Error deleting user account:", error);
     res.status(500).json({ message: "Server error" });
   }
-};    
+};
