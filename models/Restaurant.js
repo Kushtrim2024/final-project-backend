@@ -17,7 +17,7 @@ const RestaurantSchema = new mongoose.Schema(
 
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "restaurant",
+      ref: "RestaurantOwner",
       required: true,
     },
   
