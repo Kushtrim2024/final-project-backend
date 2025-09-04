@@ -25,9 +25,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ4MzJiN
   ]
 }  
 ### POST Menu Items
-POST http://localhost:5517/owner/restaurants/68a4832b77d748d8c18f4024/menu-items
+POST http://localhost:5517/owner/restaurants/68b5a10629ae456ca6376181/menu-items
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ4MzJiNzdkNzQ4ZDhjMThmNDAyNCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NjExOTYyLCJleHAiOjE3NTU2MTU1NjJ9.EeGd4muikN9zKrOqK_60NhpR7lsl56dEuAZfoJqecgw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YjVhMTA2MjlhZTQ1NmNhNjM3NjE4MSIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU2OTkxNzE0LCJleHAiOjE3NTY5OTUzMTR9.igXNQtDtZ0hAFCJw7C6JRIASSRo9G7vMLpMpcQxKB1M
 
 {
     "name": "Burger Deluxe",
@@ -38,8 +38,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ4MzJiN
 }
 
 ### Get Menu Items
-GET http://localhost:5517/owner/restaurants/68a4832b77d748d8c18f4024/menu-items
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQ4MzJiNzdkNzQ4ZDhjMThmNDAyNCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU1NjExOTYyLCJleHAiOjE3NTU2MTU1NjJ9.EeGd4muikN9zKrOqK_60NhpR7lsl56dEuAZfoJqecgw
+GET http://localhost:5517/owner/restaurants/68b5a10629ae456ca63765e2/menu-items
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YjVhMTA2MjlhZTQ1NmNhNjM3NjE4MSIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU2OTkxNzc3LCJleHAiOjE3NTY5OTUzNzd9.APPXdvNwWvfJ5s_PfEFmRaNemrr_qFzQq-bM7TVuRrM
+
+### Get Menu Item By ID
+GET http://localhost:5517/owner/restaurants/68b5a10629ae456ca63765e2/menu-items/68b6e81224c0f82caebc7914
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YjVhMTA2MjlhZTQ1NmNhNjM3NjE4MSIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU2OTkxNzc3LCJleHAiOjE3NTY5OTUzNzd9.APPXdvNwWvfJ5s_PfEFmRaNemrr_qFzQq-bM7TVuRrM
 
 ### Update Menu Item
 PUT http://localhost:5517/owner/restaurants/68a4832b77d748d8c18f4024/menu-items/68a483b377d748d8c18f402a
