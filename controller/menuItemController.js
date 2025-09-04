@@ -52,6 +52,44 @@ export const getMenuItemById = async (req, res) => {
   }
 }
 
+// Restaurantowner - Nur seine Produkte ansehen
+export const getMyMenuItems = async (req, res) => {
+  try {
+    const menuItems = await MenuItem.find({ restaurantId: req.user.restaurantId });
+    if (menuItems.length === 0) {
+      return res.status(404).json({ message: "You have no menu items yet" });
+    }
+    res.status(200).json(menuItems);
+  } catch (error) {
+    console.error("Error fetching my menu items:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Restaurantowner - Nur sein Produkt über die ID ansehen
+export const getMyMenuItemById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { restaurantId } = req.user; 
+
+    const menuItem = await MenuItem.findOne({
+      _id: id,
+      restaurantId: restaurantId 
+    });
+
+    if (!menuItem) {
+      // It's a security best practice to return 404 for both not found and unauthorized access.
+      // This prevents an attacker from knowing if an ID exists but belongs to a different user.
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json(menuItem);
+  } catch (error) {
+    console.error("Error fetching my menu item:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 // Create menu item
 export const createMenuItem = async (req, res) => {
   const { restaurantId } = req.params;

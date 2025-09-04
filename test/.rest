@@ -112,7 +112,7 @@ POST http://localhost:5517/owner/login
 Content-Type: application/json
 
 {
-  "email": "johnny39@gmail.com",
+  "email": "eino_runolfsson88@hotmail.com",
   "password": "OwnerPW123!"
 }
 

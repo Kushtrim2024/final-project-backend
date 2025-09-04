@@ -50,7 +50,6 @@ app.use("/owner/restaurants/:restaurantId/menu-items", menuRouter);
 // RestaurantOwner-eigene Restaurants (CRUD für eigenes Restaurant)
 app.use("/owner/restaurants", restaurantRouter);
 
-
 // Admin Router
 app.use("/admin/users", adminUserRouter);
 app.use("/admin/restaurants", adminRestaurantRouter);
