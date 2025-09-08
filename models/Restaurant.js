@@ -82,6 +82,8 @@ const RestaurantSchema = new mongoose.Schema(
       },
     ],
 
+    averageRating: { type: Number, default: 0 }, // <-- NEU
+
     socialLinks: {
       facebook: String,
       instagram: String,
@@ -89,6 +91,16 @@ const RestaurantSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+RestaurantSchema.methods.calculateAverageRating = function () {
+  if (this.ratings.length === 0) {
+    this.averageRating = 0;
+  } else {
+    const total = this.ratings.reduce((sum, r) => sum + r.rating, 0);
+    this.averageRating = total / this.ratings.length;
+  }
+  return this.averageRating;
+};
 
 RestaurantSchema.index({ location: "2dsphere" });
 

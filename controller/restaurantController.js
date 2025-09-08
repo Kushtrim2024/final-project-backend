@@ -396,3 +396,142 @@ export const getRestaurantsByLocation = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+//Add Rating
+export const addRating = async (req, res) => {
+  try {
+    const { rating, comment } = req.body;
+    const restaurantId = req.params.id;
+    const userId = req.user._id;
+
+    const restaurant = await Restaurant.findById(restaurantId);
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    const alreadyRated = restaurant.ratings.find(
+      (r) => r.userId.toString() === userId.toString()
+    );
+
+    if (alreadyRated) {
+      return res.status(400).json({ message: "You have already rated this restaurant." });
+    }
+
+    restaurant.ratings.push({ userId, rating, comment });
+
+    // Durchschnitt neu berechnen
+    restaurant.calculateAverageRating();
+
+    await restaurant.save();
+
+    res.status(201).json({
+      message: "Review added",
+      averageRating: restaurant.averageRating,
+      totalRatings: restaurant.ratings.length,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Alle Ratings für ein Restaurant abrufen
+export const getRatings = async (req, res) => {
+  try {
+    const restaurantId = req.params.id;
+
+    const restaurant = await Restaurant.findById(restaurantId)
+      .populate("ratings.userId", "name email") // optional: User-Daten dazu holen
+      .select("ratings averageRating"); // nur relevante Felder zurückgeben
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    res.json({
+      averageRating: restaurant.averageRating,
+      totalRatings: restaurant.ratings.length,
+      ratings: restaurant.ratings,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Eigene Bewertung aktualisieren
+export const updateRating = async (req, res) => {
+  try {
+    const { rating, comment } = req.body;
+    const restaurantId = req.params.id;
+    const userId = req.user._id;
+
+    const restaurant = await Restaurant.findById(restaurantId);
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    // Prüfen ob User schon bewertet hat
+    const existingRating = restaurant.ratings.find(
+      (r) => r.userId.toString() === userId.toString()
+    );
+
+    if (!existingRating) {
+      return res.status(400).json({ message: "You haven't rated this restaurant yet." });
+    }
+
+    // Bewertung updaten
+    if (rating) existingRating.rating = rating;
+    if (comment) existingRating.comment = comment;
+    existingRating.createdAt = new Date(); // optional: Datum aktualisieren
+
+    // Durchschnitt neu berechnen
+    restaurant.calculateAverageRating();
+
+    await restaurant.save();
+
+    res.json({
+      message: "Review updated",
+      averageRating: restaurant.averageRating,
+      totalRatings: restaurant.ratings.length,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Eigene Bewertung löschen
+export const deleteRating = async (req, res) => {
+  try {
+    const restaurantId = req.params.id;
+    const userId = req.user._id;
+
+    const restaurant = await Restaurant.findById(restaurantId);
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    // Prüfen ob User schon bewertet hat
+    const ratingIndex = restaurant.ratings.findIndex(
+      (r) => r.userId.toString() === userId.toString()
+    );
+
+    if (ratingIndex === -1) {
+      return res.status(400).json({ message: "You haven't rated this restaurant yet." });
+    }
+
+    // Bewertung entfernen
+    restaurant.ratings.splice(ratingIndex, 1);
+
+    // Durchschnitt neu berechnen
+    restaurant.calculateAverageRating();
+
+    await restaurant.save();
+
+    res.json({
+      message: "Review deleted",
+      averageRating: restaurant.averageRating,
+      totalRatings: restaurant.ratings.length,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
