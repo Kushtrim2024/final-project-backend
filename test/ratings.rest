@@ -1,0 +1,26 @@
+POST http://localhost:5517/restaurants/68b5a10629ae456ca63765e2/rating
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzODhlYjdkZTU4MGVkZTY0OTg1OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU3MzMwNTU0LCJleHAiOjE3NTczMzQxNTR9.WhWy3-r64rqM57lXnNmu6I7hwgQB4oTZ1PHNTtGi13Y
+Content-Type: application/json
+
+{
+  "rating": 5,
+  "comment": "Gutes Essen!"
+}
+
+
+###
+GET http://localhost:5517/restaurants/68b5a10629ae456ca63765e2/ratings
+
+###
+PUT http://localhost:5517/restaurants/68b5a10629ae456ca63765e2/rating
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzODhlYjdkZTU4MGVkZTY0OTg1OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU3MzMwNTU0LCJleHAiOjE3NTczMzQxNTR9.WhWy3-r64rqM57lXnNmu6I7hwgQB4oTZ1PHNTtGi13Y
+Content-Type: application/json
+
+{
+  "rating": 5,
+  "comment": "Habe meine Meinung geändert, war doch mega gut!"
+}
+
+###
+DELETE http://localhost:5517/restaurants/68b5a10629ae456ca63765e2/rating
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzODhlYjdkZTU4MGVkZTY0OTg1OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU3MzMwNTU0LCJleHAiOjE3NTczMzQxNTR9.WhWy3-r64rqM57lXnNmu6I7hwgQB4oTZ1PHNTtGi13Y
