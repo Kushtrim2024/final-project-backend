@@ -6,7 +6,10 @@ import {
   createRestaurant,
   updateRestaurant,
   deleteRestaurant,
-  updateRestaurantDetails
+  updateRestaurantDetails,
+  getRatings,
+  getAllRatings,
+  adminDeleteRating
 } from "../controller/restaurantController.js";
 import { updateRestaurantStatus } from "../controller/adminController.js";
 
@@ -18,6 +21,17 @@ router.post("/", authMiddleware(["admin"]), createRestaurant);
 router.put("/:id", authMiddleware(["admin"]), updateRestaurant);
 router.put("/:id/details", authMiddleware(["admin"]), updateRestaurantDetails);
 router.delete("/:id", authMiddleware(["admin"]), deleteRestaurant);
+
+
+// Für ein bestimmtes Restaurant
+router.get("/:id/ratings", authMiddleware(["admin"]), getRatings);
+
+// Für alle Restaurants
+router.get("/ratings", authMiddleware(["admin"]), getAllRatings);
+
+// Bewertung löschen
+router.delete("/:id/ratings/:ratingId", authMiddleware(["admin"]), adminDeleteRating);
+
 
 
 export default router;

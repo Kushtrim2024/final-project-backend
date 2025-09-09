@@ -1,26 +1,52 @@
 POST http://localhost:5517/restaurants/68b5a10629ae456ca63765e2/rating
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzODhlYjdkZTU4MGVkZTY0OTg1OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU3MzMwNTU0LCJleHAiOjE3NTczMzQxNTR9.WhWy3-r64rqM57lXnNmu6I7hwgQB4oTZ1PHNTtGi13Y
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YWVlODJjNTYyYWM0ZTg5NzNmMzY4YyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU3NDIwNDAyLCJleHAiOjE3NTc0MjQwMDJ9.fYMB__cHQmYilmwdO4IPyIPyst9nNCnvMosRj8UbqJY
 Content-Type: application/json
 
 {
   "rating": 5,
-  "comment": "Gutes Essen!"
+  "comment": "Sehr Gutes Essen!"
 }
-
 
 ###
 GET http://localhost:5517/restaurants/68b5a10629ae456ca63765e2/ratings
 
 ###
 PUT http://localhost:5517/restaurants/68b5a10629ae456ca63765e2/rating
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzODhlYjdkZTU4MGVkZTY0OTg1OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU3MzMwNTU0LCJleHAiOjE3NTczMzQxNTR9.WhWy3-r64rqM57lXnNmu6I7hwgQB4oTZ1PHNTtGi13Y
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTZmZmIyODlkYmZhZjYzN2RkNzY1ZSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU3NDE4OTQyLCJleHAiOjE3NTc0MjI1NDJ9.GnOk3pFcNDt447gCJ9jdRIW6v765FzkNj7xiiUtYPuw
 Content-Type: application/json
 
 {
   "rating": 5,
-  "comment": "Habe meine Meinung geändert, war doch mega gut!"
+  "comment": "Top"
 }
 
 ###
 DELETE http://localhost:5517/restaurants/68b5a10629ae456ca63765e2/rating
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzODhlYjdkZTU4MGVkZTY0OTg1OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU3MzMwNTU0LCJleHAiOjE3NTczMzQxNTR9.WhWy3-r64rqM57lXnNmu6I7hwgQB4oTZ1PHNTtGi13Y
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzODhlYjdkZTU4MGVkZTY0OTg1OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU3NDA1MzMxLCJleHAiOjE3NTc0MDg5MzF9._9Z1gEAcJP_SYhcZ7c1Jj_TVWICT9T_IzMcDTDBTZFk
+
+
+### Alle Bewertungen von eine bestimmte Restaurant abrufen
+GET http://localhost:5517/owner/restaurants/my-restaurant/ratings
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YjVhMTA2MjlhZTQ1NmNhNjM3NjE4MSIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU3NDE5MjY4LCJleHAiOjE3NTc0MjI4Njh9.3GUFNVzRn6wY9P0R7syEN4mKk5lr7aK4zo_aBauLOuE
+
+### Feedback von Restaurant Owner
+POST http://localhost:5517/restaurants/my-restaurant/ratings/68c01b83736d4586ae574ccd/response
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YjVhMTA2MjlhZTQ1NmNhNjM3NjE4MSIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU3NDIwNDcyLCJleHAiOjE3NTc0MjQwNzJ9.Oq03X_azsDBkP6VdSwIs4nBgQf_0oPrId5Kcejd5jJs
+Content-Type: application/json
+
+{
+  "response": "Vielen Dank!"
+}
+
+### Alle Bewertungen von eine bestimmte Restaurant abrufen
+GET http://localhost:5517/admin/restaurants/68b5a10629ae456ca63765e2/ratings
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YjVhMTA2MjlhZTQ1NmNhNjM3NjE4MSIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzU3NDE5MjY4LCJleHAiOjE3NTc0MjI4Njh9.3GUFNVzRn6wY9P0R7syEN4mKk5lr7aK4zo_aBauLOuE
+
+### Alle Bewertungen abrufen
+GET http://localhost:5517/admin/restaurants/
+ratings
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NzQyMDU1MSwiZXhwIjoxNzU3NDI0MTUxfQ.wBd1pVuG9H4Ka4PypvvvabHZdrAdNh4hw49QVEUQkSo
+
+### Löschen einer Bewertung
+DELETE http://localhost:5517/admin/restaurants/68b5a10629ae456ca63765e2/ratings/68b5a10629ae456ca63765e4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NzQyMDU1MSwiZXhwIjoxNzU3NDI0MTUxfQ.wBd1pVuG9H4Ka4PypvvvabHZdrAdNh4hw49QVEUQkSo

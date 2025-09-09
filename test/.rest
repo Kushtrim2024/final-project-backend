@@ -25,8 +25,8 @@ POST http://localhost:5517/user/login
 Content-Type: application/json
 
 {
-    "email": "user1@gmail.com",
-    "password": "TestPW123!"
+    "email": "user4@mail.de",
+    "password": "User4@1234"
 }
 
 ### Get User
@@ -183,7 +183,7 @@ Content-Type: application/json
 }
 
 ### Admin login
-POST http://localhost:5518/admin/login
+POST http://localhost:5517/admin/login
 Content-Type: application/json
 
 {

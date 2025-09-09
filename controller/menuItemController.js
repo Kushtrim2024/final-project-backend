@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import MenuItem from "../models/MenuItem.js";
 import { uploadBufferToCloudinary } from "../utils/cloudinaryUpload.js";
 

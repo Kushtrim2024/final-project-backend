@@ -283,6 +283,60 @@ export const deleteMyRestaurant = async (req, res) => {
   }
 };
 
+
+export const getRatingsForOwner = async (req, res) => {
+  try {
+    const ownerId = req.user._id; // ID des Restaurant-Owners aus JWT
+
+    const restaurant = await Restaurant.findOne({ ownerId })
+      .populate("ratings.userId", "name email")
+      .select("ratings averageRating");
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    res.json({
+      averageRating: restaurant.averageRating,
+      totalRatings: restaurant.ratings.length,
+      ratings: restaurant.ratings,
+    });
+  } catch (error) {
+    console.error("Error fetching ratings:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+// Owner gibt Feedback auf eine Bewertung
+export const addOwnerResponse = async (req, res) => {
+  try {
+    const { response } = req.body;
+    const { ratingId } = req.params; 
+    const ownerId = req.user._id;
+
+    // Restaurant über ownerId finden
+    const restaurant = await Restaurant.findOne({ ownerId });
+    if (!restaurant) return res.status(404).json({ message: "Restaurant not found" });
+
+    const rating = restaurant.ratings.id(ratingId);
+    if (!rating) return res.status(404).json({ message: "Rating not found" });
+
+    rating.ownerResponse = {
+      text: response,
+      createdAt: new Date(),
+    };
+
+    await restaurant.save();
+
+    res.status(200).json({ message: "Owner response added", rating });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+
 export const getRestaurantsByCategory = async (req, res) => {
   const { category } = req.query;
   if (!category)
@@ -535,3 +589,68 @@ export const deleteRating = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+//Alle Bewertungen über alle Restaurants abrufen
+
+export const getAllRatings = async (req, res) => {
+  try {
+    const restaurants = await Restaurant.find()
+      .populate("ratings.userId", "name email")
+      .select("restaurantName ratings");
+
+    const allRatings = restaurants.flatMap((r) =>
+      r.ratings.map((rating) => ({
+        restaurantId: r._id,
+        restaurantName: r.restaurantName,
+        ratingId: rating._id,
+        user: rating.userId,
+        rating: rating.rating,
+        comment: rating.comment,
+        ownerResponse: rating.ownerResponse,
+        createdAt: rating.createdAt,
+      }))
+    );
+
+    res.json({
+      totalRatings: allRatings.length,
+      ratings: allRatings,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export const adminDeleteRating = async (req, res) => {
+  try {
+    const { id: restaurantId, ratingId } = req.params;
+
+    const restaurant = await Restaurant.findById(restaurantId);
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    const ratingIndex = restaurant.ratings.findIndex(
+      (r) => r._id.toString() === ratingId
+    );
+
+    if (ratingIndex === -1) {
+      return res.status(404).json({ message: "Rating not found" });
+    }
+
+    restaurant.ratings.splice(ratingIndex, 1);
+
+    // Durchschnitt neu berechnen
+    restaurant.calculateAverageRating();
+
+    await restaurant.save();
+
+    res.json({
+      message: "Rating deleted successfully",
+      averageRating: restaurant.averageRating,
+      totalRatings: restaurant.ratings.length,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
