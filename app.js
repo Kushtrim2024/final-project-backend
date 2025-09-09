@@ -16,6 +16,7 @@ import menuRouter from "./router/menuRouter.js";
 import orderRouter from "./router/orderRouter.js";
 import restaurantRouter from "./router/restaurantRouter.js";
 import cartRouter from "./router/cartRouter.js";
+import contactRouter from "./router/contactRouter.js";
 
 import fileUpload from "express-fileupload";
 import { v2 as cloudinary } from "cloudinary";
@@ -37,6 +38,8 @@ app.use(
     credentials: true,
   })
 );
+//Contact
+app.use("/api/contact", contactRouter);
 
 // Public Router
 app.use("/restaurants", restaurantPublicRouter);
@@ -49,7 +52,6 @@ app.use("/owner/restaurants/:restaurantId/menu-items", menuRouter);
 
 // RestaurantOwner-eigene Restaurants (CRUD für eigenes Restaurant)
 app.use("/owner/restaurants", restaurantRouter);
-
 
 // Admin Router
 app.use("/admin/users", adminUserRouter);
