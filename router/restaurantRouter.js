@@ -1,6 +1,6 @@
 import express from "express";
 import { authMiddleware } from "../middleware/authMiddleware.js";
-import { addRating, deleteMyRestaurant, deleteRating, getMyRestaurant, getRatings, updateRating, updateRestaurant, updateRestaurantDetails } from "../controller/restaurantController.js";
+import { addOwnerResponse, addRating, deleteMyRestaurant, deleteRating, getMyRestaurant, getRatings, getRatingsForOwner, updateRating, updateRestaurant, updateRestaurantDetails } from "../controller/restaurantController.js";
 import { getMyMenuItemById, getMyMenuItems } from "../controller/menuItemController.js";
 
 
@@ -13,6 +13,19 @@ router.delete("/my-restaurant", authMiddleware(["restaurant"]), deleteMyRestaura
 
 router.get("/my-restarant/menu-items", authMiddleware(["restaurant"]), getMyMenuItems);
 router.get("/my-restarant/menu-items/:id", authMiddleware(["restaurant"]), getMyMenuItemById);
+
+
+// Alle Bewertungen für das eigene Restaurant abrufen
+router.get(
+  "/my-restaurant/ratings", authMiddleware(["restaurant"]),  getRatingsForOwner
+);
+
+// Feedback/Antwort auf eine Bewertung hinzufügen
+router.post(
+  "/my-restaurant/ratings/:ratingId/response",
+  authMiddleware(["restaurant"]),
+  addOwnerResponse
+);
 
 
 // POST /restaurants/:id/rating → Bewertung abgeben
