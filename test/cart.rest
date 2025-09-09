@@ -1,37 +1,34 @@
 ### Add product to cart
-POST http://localhost:5518/cart/add
+POST http://localhost:5517/cart/add-payment
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzODhlYjdkZTU4MGVkZTY0OTg1OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU2MDI5NTExLCJleHAiOjE3NTYwMzMxMTF9.r322h3n32o25pNlWMjeSnoW22b6YSomkQLwigzU5jzI
 
 {
-    "userId": "68a4388eb7de580ede649859",
     "restaurantId": "68a23988bb5b07bed06d81af",
     "menuItemId": "68a23988bb5b07bed06d8a0c",
     "quantity": 2
 }  
 
 ### View Cart
-GET http://localhost:5518/cart/68a4388eb7de580ede649859
+GET http://localhost:5517/cart/payment-methods
 Content-Type: application/json 
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzODhlYjdkZTU4MGVkZTY0OTg1OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU2MDI5NTExLCJleHAiOjE3NTYwMzMxMTF9.r322h3n32o25pNlWMjeSnoW22b6YSomkQLwigzU5jzI 
 
 ### Choose Payment Method
-POST http://localhost:5518/cart/choose-payment
+POST http://localhost:5517/cart/choose-payment
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzODhlYjdkZTU4MGVkZTY0OTg1OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU2MDI5NTExLCJleHAiOjE3NTYwMzMxMTF9.r322h3n32o25pNlWMjeSnoW22b6YSomkQLwigzU5jzI
 
 {
-    "userId": "68a4388eb7de580ede649859",
     "paymentMethod": "card"
 }
 
 ### Checkout
-POST http://localhost:5518/cart/checkout
+POST http://localhost:5517/cart/checkout
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTQzODhlYjdkZTU4MGVkZTY0OTg1OSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU2MDI5NTExLCJleHAiOjE3NTYwMzMxMTF9.r322h3n32o25pNlWMjeSnoW22b6YSomkQLwigzU5jzI
 
 {
-  "userId": "68a4388eb7de580ede649859",
   "restaurantId": "68a23988bb5b07bed06d81af",
   "customerName": "Max Mustermann",
   "phone": "+49123456789",
