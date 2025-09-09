@@ -1,0 +1,9 @@
+### Send contact message
+POST http://localhost:5517/api/contact
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "message": "Hello from REST Client"
+}

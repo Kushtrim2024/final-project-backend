@@ -1,5 +1,5 @@
 import express from "express";
-import { profile, registerUser, loginUser, updateUserProfile, updateUserPassword, deleteUserAccount, addAddress, removeAddress, getDefaultAddress, uploadProfilePicture } from "../controller/userController.js";
+import { profile, registerUser, loginUser, updateUserProfile, updateUserPassword, deleteUserAccount, addAddress, removeAddress, getDefaultAddress, uploadProfilePicture, updateAddress } from "../controller/userController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import upload from "../middleware/upload.js";
 
@@ -26,6 +26,6 @@ router.put("/profile/photo", authMiddleware(["user"]), uploadProfilePicture);
 router.post("/profile/addresses", authMiddleware(["user"]), addAddress);
 router.get("/profile/addresses/default", authMiddleware(["user"]), getDefaultAddress);
 router.delete("/profile/addresses/:addressId", authMiddleware(["user"]), removeAddress);
-
+router.put("/profile/addresses/:addressId", authMiddleware, updateAddress);
 
 export default router;
