@@ -74,13 +74,19 @@ const RestaurantSchema = new mongoose.Schema(
     },
 
     ratings: [
-      {
-        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        rating: { type: Number, min: 1, max: 5 },
-        comment: String,
-        createdAt: { type: Date, default: Date.now },
-      },
-    ],
+  {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    rating: { type: Number, min: 1, max: 5 },
+    comment: String,
+    createdAt: { type: Date, default: Date.now },
+    ownerResponse: {
+      text: { type: String },             // Antworttext
+      createdAt: { type: Date, default: Date.now }, // Zeitpunkt der Antwort
+    },
+  },
+],
+
+    averageRating: { type: Number, default: 0 }, // <-- NEU
 
     socialLinks: {
       facebook: String,
@@ -89,6 +95,16 @@ const RestaurantSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+RestaurantSchema.methods.calculateAverageRating = function () {
+  if (this.ratings.length === 0) {
+    this.averageRating = 0;
+  } else {
+    const total = this.ratings.reduce((sum, r) => sum + r.rating, 0);
+    this.averageRating = total / this.ratings.length;
+  }
+  return this.averageRating;
+};
 
 RestaurantSchema.index({ location: "2dsphere" });
 

@@ -6,6 +6,8 @@ import {
   createMenuItem,
   updateMenuItem,
   deleteMenuItem,
+  getMenuItemById,
+
 } from "../controller/menuItemController.js";
 
 const router = express.Router({ mergeParams: true }); 
@@ -14,6 +16,7 @@ const router = express.Router({ mergeParams: true });
 
 // GET /owner/restaurants/:restaurantId/menu-items
 router.get("/", getMenuItems);
+router.get("/:id", getMenuItemById)
 
 // POST /owner/restaurants/:restaurantId/menu-items
 router.post(
@@ -22,6 +25,7 @@ router.post(
   upload.array("images", 5), // bis zu 5 Bilder
   createMenuItem
 );
+
 
 // PUT /owner/restaurants/:restaurantId/menu-items/:id
 router.put("/:id", authMiddleware(["restaurant"]), updateMenuItem);

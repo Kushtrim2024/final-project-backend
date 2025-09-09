@@ -21,12 +21,12 @@ Content-Type: application/json
 }
 
 ### User login
-POST http://localhost:5518/user/login
+POST http://localhost:5517/user/login
 Content-Type: application/json
 
 {
-    "email": "user1@gmail.com",
-    "password": "TestPW123!"
+    "email": "user4@mail.de",
+    "password": "User4@1234"
 }
 
 ### Get User
@@ -112,7 +112,7 @@ POST http://localhost:5517/owner/login
 Content-Type: application/json
 
 {
-  "email": "johnny39@gmail.com",
+  "email": "eino_runolfsson88@hotmail.com",
   "password": "OwnerPW123!"
 }
 
@@ -183,7 +183,7 @@ Content-Type: application/json
 }
 
 ### Admin login
-POST http://localhost:5518/admin/login
+POST http://localhost:5517/admin/login
 Content-Type: application/json
 
 {

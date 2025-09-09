@@ -44,6 +44,9 @@ app.use("/api/contact", contactRouter);
 // Public Router
 app.use("/restaurants", restaurantPublicRouter);
 
+// Eingelogte User kann Bewertung hinzufügen
+app.use("/restaurants", restaurantRouter)
+
 // Owner Router: Profil & Auth für RestaurantOwner
 app.use("/owner", restaurantOwnerRouter);
 
