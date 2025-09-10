@@ -2,6 +2,7 @@ import express from "express";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { addOwnerResponse, addRating, deleteMyRestaurant, deleteRating, getMyRestaurant, getRatings, getRatingsForOwner, updateRating, updateRestaurant, updateRestaurantDetails } from "../controller/restaurantController.js";
 import { getMyMenuItemById, getMyMenuItems } from "../controller/menuItemController.js";
+import { getAllOrders, getOrderDetails, changeOrderStatus } from "../controller/orderController.js";
 
 
 const router = express.Router();
@@ -14,7 +15,11 @@ router.delete("/my-restaurant", authMiddleware(["restaurant"]), deleteMyRestaura
 router.get("/my-restarant/menu-items", authMiddleware(["restaurant"]), getMyMenuItems);
 router.get("/my-restarant/menu-items/:id", authMiddleware(["restaurant"]), getMyMenuItemById);
 
+router.get("/my-restaurant/orders", authMiddleware(["restaurant"]), getAllOrders
+);
+router.get("/my-restaurant/orders/details/:id", authMiddleware(["restaurant"]), getOrderDetails);
 
+router.put("/my-restaurant/orders/update-status", authMiddleware(["restaurant"]), changeOrderStatus);
 // Alle Bewertungen für das eigene Restaurant abrufen
 router.get(
   "/my-restaurant/ratings", authMiddleware(["restaurant"]),  getRatingsForOwner

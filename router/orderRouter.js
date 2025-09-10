@@ -15,13 +15,13 @@ const router = express.Router();
 
 // Orders
 router.post("/", authMiddleware(["user"]), placeOrder);
-router.get("/", authMiddleware(["user", "owner", "admin"]), getAllOrders);
+router.get("/", authMiddleware(["user","admin"]), getAllOrders);
 
 router.get("/history", authMiddleware(["user"]), getOrderHistory);
 
 // Details zuerst, bevor allgemeine :orderId
 // Alle Rollen, die Zugriff haben sollen
-router.get("/details/:id", authMiddleware(["user", "restaurant", "admin"]), getOrderDetails);
+router.get("/details/:id", authMiddleware(["user","admin"]), getOrderDetails);
 
 
 // Cancel & Update

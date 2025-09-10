@@ -193,7 +193,7 @@ Content-Type: application/json
 
 ### Get all Admins
 GET http://localhost:5517/admin
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjA0ODYyOCwiZXhwIjoxNzU2MDUyMjI4fQ.Een91NlCu_uOi4lFPC8oeGkjYbt9Infnm36lgHSVGyM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTMzODA3MDE3MDA2OTdiYzc3OWZkMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NzUxODMyMywiZXhwIjoxNzU3NTIxOTIzfQ.j5Zpq2ztbVOt9lew7rolz8F3pvkD5cIIg6A_R6VV9BA
 
 ### Get Admin by ID
 GET http://localhost:5517/admin/id/68a329335f1e96dd53dbf1c4
