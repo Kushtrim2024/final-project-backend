@@ -35,6 +35,7 @@ const userSchema = new mongoose.Schema({
   profilePicture: { type: String, default: "default.png" }, // URL oder Pfad
   addresses: { type: [addressSchema], default: [] },
   role: { type: String, default: "user" },
+  restaurantId: { type: mongoose.Schema.Types.ObjectId, ref: "Restaurant" },
 
   paymentMethods: { type: [paymentMethodSchema], default: [] }, // Payment Methods als Array
 

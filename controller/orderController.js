@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Order from "../models/Order.js";
@@ -16,31 +17,41 @@ export const getAllOrders = async (req, res) => {
     const user = req.user;
     let orders;
 
+    if (!user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
     if (user.role === "admin") {
-      // Admin: sieht alles
+      // Admin: sieht alle Orders
       orders = await Order.find()
         .populate("userId", "name email phone")
         .populate("items.productId", "name basePrice")
-        .populate("items.restaurantId", "_id name address phone")
-        .populate("restaurants", "_id name address phone"); // falls du das Array im Schema hast
+        .populate("items.restaurantId", "_id name address phone");
     } 
     else if (user.role === "restaurant") {
-      // Restaurant-Besitzer: nur Orders, die sein Restaurant betreffen
-      orders = await Order.find({ "items.restaurantId": user.restaurantId })
-        .populate("userId", "name email phone")
-        .populate("items.productId", "name basePrice")
-        .populate("items.restaurantId", "_id name address phone")
-        .populate("restaurants", "_id name address phone");
-    } 
+  if (!user.restaurantId) {
+    return res.status(400).json({ message: "Restaurant user has no restaurantId set" });
+  }
+
+  const restaurantObjectId = new mongoose.Types.ObjectId(user.restaurantId);
+
+  orders = await Order.find({ restaurantId: restaurantObjectId }) // ✅ angepasst
+    .populate("userId", "name email phone")
+    .populate("items.productId", "name basePrice")
+    .populate("items.restaurantId", "_id name address phone");
+}
     else if (user.role === "user") {
-      // User: nur seine Orders
+      // User: nur eigene Orders
       orders = await Order.find({ userId: user._id })
         .populate("items.productId", "name basePrice")
-        .populate("items.restaurantId", "_id name address phone")
-        .populate("restaurants", "_id name address phone");
+        .populate("items.restaurantId", "_id name address phone");
     } 
     else {
       return res.status(403).json({ message: "Not authorized" });
+    }
+
+    if (!orders || orders.length === 0) {
+      return res.status(404).json({ message: "No orders found" });
     }
 
     res.status(200).json(orders);
@@ -49,8 +60,6 @@ export const getAllOrders = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
-
 
 // Place Order
 export const placeOrder = async (req, res) => {
