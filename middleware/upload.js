@@ -1,7 +1,10 @@
 import multer from "multer";
 
 // Bilder im RAM speichern
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 8 * 1024 * 1024 }, // 8MB
+});
 
 export default upload;

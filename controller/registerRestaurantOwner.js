@@ -2,12 +2,21 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import RestaurantOwner from "../models/RestaurantOwner.js";
 import Restaurant from "../models/Restaurant.js";
+import cloudinary from "../config/cloudinary.js";
+import { uploadBufferToCloudinary } from "../utils/cloudinaryUpload.js";
 
 export const registerRestaurantOwner = async (req, res) => {
   try {
     const {
-      name, email, password, phone, address,
-      restaurantName, taxNumber, document, website
+      name,
+      email,
+      password,
+      phone,
+      address,
+      restaurantName,
+      taxNumber,
+      document,
+      website,
     } = req.body;
 
     // Passwort hashen
@@ -37,7 +46,11 @@ export const registerRestaurantOwner = async (req, res) => {
     });
 
     // 3. JWT erstellen
-    const token = jwt.sign({ id: owner._id, role: owner.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(
+      { id: owner._id, role: owner.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
     res.status(201).json({
       message: "Restaurant owner registered successfully",
@@ -52,10 +65,8 @@ export const registerRestaurantOwner = async (req, res) => {
         document: owner.document,
         website: owner.website,
         role: owner.role,
-        
-      }
+      },
     });
-
   } catch (error) {
     console.error("Register error:", error);
     res.status(500).json({ message: "Server error" });
@@ -63,20 +74,12 @@ export const registerRestaurantOwner = async (req, res) => {
 };
 export const getRestaurantOwnerProfile = async (req, res) => {
   try {
-    const owner = await RestaurantOwner.findById(req.user._id).select("-password");
-    if (!owner) return res.status(404).json({ message: "Restaurant owner not found" });
-
-    res.status(200).json({
-      id: owner._id,
-      name: owner.name,
-      email: owner.email,
-      phone: owner.phone,
-      address: owner.address,
-      restaurantName: owner.restaurantName,
-      taxNumber: owner.taxNumber,
-      document: owner.document,
-      website: owner.website,
-    });
+    const ownerId = req.user._id || req.user.id;
+    const owner = await RestaurantOwner.findById(ownerId).select("-password");
+    if (!owner)
+      return res.status(404).json({ message: "Restaurant owner not found" });
+    const restaurant = await Restaurant.findOne({ ownerId });
+    return res.status(200).json({ owner, restaurant });
   } catch (error) {
     console.error("Error fetching profile:", error);
     res.status(500).json({ message: "Server error" });
@@ -88,16 +91,18 @@ export const loginRestaurantOwner = async (req, res) => {
 
   try {
     const owner = await RestaurantOwner.findOne({ email });
-    if (!owner) return res.status(404).json({ message: "Restaurant owner not found" });
+    if (!owner)
+      return res.status(404).json({ message: "Restaurant owner not found" });
 
     const isMatch = await bcrypt.compare(password, owner.password);
-    if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
+    if (!isMatch)
+      return res.status(401).json({ message: "Invalid credentials" });
 
     const token = jwt.sign(
-    { id: owner._id, role: owner.role }, 
-    process.env.JWT_SECRET,
-    { expiresIn: "1h" }
-  );
+      { id: owner._id, role: owner.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
     res.status(200).json({
       message: "Restaurant owner logged in successfully",
@@ -111,33 +116,50 @@ export const loginRestaurantOwner = async (req, res) => {
         taxNumber: owner.taxNumber,
         document: owner.document,
         website: owner.website,
-      }
+      },
     });
-
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ message: "Server error" });
   }
-};  
+};
 
 export const updateRestaurantOwnerProfile = async (req, res) => {
   try {
-    const { name, email, phone, address, restaurantName, taxNumber, document, website } = req.body;
+    const fieldsToUpdate = {};
+
+    const allowedFields = [
+      "name",
+      "email",
+      "phone",
+      "address",
+      "restaurantName",
+      "taxNumber",
+      "document",
+      "website",
+    ];
+
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined && req.body[field].trim() !== "") {
+        fieldsToUpdate[field] = req.body[field];
+      }
+    });
 
     const updatedOwner = await RestaurantOwner.findByIdAndUpdate(
       req.user._id,
-      { name, email, phone, address, restaurantName, taxNumber, document, website },
+      fieldsToUpdate,
       { new: true, runValidators: true }
     ).select("-password");
 
-    if (!updatedOwner) return res.status(404).json({ message: "Restaurant owner not found" });
+    if (!updatedOwner)
+      return res.status(404).json({ message: "Restaurant owner not found" });
 
     res.status(200).json(updatedOwner);
   } catch (error) {
     console.error("Error updating profile:", error);
     res.status(500).json({ message: "Server error" });
   }
-};  
+};
 
 //Aktualisieren des Passworts für Restaurantbesitzer
 export const updateRestaurantOwnerPassword = async (req, res) => {
@@ -149,10 +171,12 @@ export const updateRestaurantOwnerPassword = async (req, res) => {
     }
 
     const owner = await RestaurantOwner.findById(req.user._id);
-    if (!owner) return res.status(404).json({ message: "Restaurant owner not found" });
+    if (!owner)
+      return res.status(404).json({ message: "Restaurant owner not found" });
 
     const isMatch = await bcrypt.compare(currentPassword, owner.password);
-    if (!isMatch) return res.status(401).json({ message: "Current password is incorrect" });
+    if (!isMatch)
+      return res.status(401).json({ message: "Current password is incorrect" });
 
     owner.password = await bcrypt.hash(newPassword, 10);
     await owner.save();
@@ -162,22 +186,88 @@ export const updateRestaurantOwnerPassword = async (req, res) => {
     console.error("Error updating password:", error);
     res.status(500).json({ message: "Server error" });
   }
-}
+};
 
 // Löschen des Restaurantbesitzer-Kontos
 
 export const deleteRestaurantOwnerAccount = async (req, res) => {
   try {
     const deletedOwner = await RestaurantOwner.findByIdAndDelete(req.user._id);
-    if (!deletedOwner) return res.status(404).json({ message: "Restaurant owner not found" });          
+    if (!deletedOwner)
+      return res.status(404).json({ message: "Restaurant owner not found" });
     // Optional: Auch das zugehörige Restaurant löschen
     await Restaurant.deleteOne({ ownerId: req.user._id });
 
-    res.status(200).json({ message: "Restaurant owner account deleted successfully" });
+    res
+      .status(200)
+      .json({ message: "Restaurant owner account deleted successfully" });
   } catch (error) {
     console.error("Error deleting account:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
+export const updateRestaurantProfile = async (req, res) => {
+  try {
+    const ownerId = req.user._id || req.user.id;
+    const allowed = [
+      "name",
+      "description",
+      "cuisines",
+      "minOrder",
+      "deliveryTime",
+      "deliveryFee",
+      "logo",
+      "coverPhoto",
+    ];
+    const update = {};
+    allowed.forEach((k) => {
+      if (req.body[k] !== undefined) update[k] = req.body[k];
+    });
+    if (update.name && !update.restaurantName)
+      update.restaurantName = update.name;
+    const restaurant = await Restaurant.findOneAndUpdate({ ownerId }, update, {
+      new: true,
+      runValidators: true,
+    });
+    if (!restaurant)
+      return res.status(404).json({ message: "Restaurant not found" });
+    return res.status(200).json({ restaurant });
+  } catch (error) {
+    console.error("Error updating restaurant:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
 
+export const uploadRestaurantCover = async (req, res) => {
+  try {
+    const ownerId = req.user._id || req.user.id;
+    if (!req.file) return res.status(400).json({ message: "No file provided" });
+
+    const restaurant = await Restaurant.findOne({ ownerId });
+    if (!restaurant)
+      return res.status(404).json({ message: "Restaurant not found" });
+
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: `restaurants/${ownerId}/covers`,
+          resource_type: "image",
+          overwrite: true,
+          transformation: [
+            { width: 1920, height: 1080, crop: "fill", gravity: "auto" },
+          ],
+        },
+        (err, data) => (err ? reject(err) : resolve(data))
+      );
+      stream.end(req.file.buffer);
+    });
+
+    restaurant.coverPhoto = result.secure_url;
+    await restaurant.save();
+    return res.status(200).json({ coverPhoto: restaurant.coverPhoto });
+  } catch (error) {
+    console.error("Error uploading cover:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
