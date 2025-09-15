@@ -1,6 +1,6 @@
 import express from "express";
 import { authMiddleware } from "../middleware/authMiddleware.js";
-import { addOwnerResponse, addRating, deleteMyRestaurant, deleteRating, getMyRestaurant, getRatings, getRatingsForOwner, updateRating, updateRestaurant, updateRestaurantDetails } from "../controller/restaurantController.js";
+import { addOwnerResponse, addRating, deleteMyRestaurant, deleteRating, getMyRestaurant, getRatings, getRatingsForOwner, updateOwnerResponse, updateRating, updateRestaurant, updateRestaurantDetails } from "../controller/restaurantController.js";
 import { getMyMenuItemById, getMyMenuItems } from "../controller/menuItemController.js";
 import { getAllOrders, getOrderDetails, changeOrderStatus } from "../controller/orderController.js";
 
@@ -29,6 +29,12 @@ router.post(
   "/my-restaurant/ratings/:ratingId/response",
   authMiddleware(["restaurant"]),
   addOwnerResponse
+);
+
+router.put(
+  "/my-restaurant/ratings/:ratingId/response",
+  authMiddleware(["restaurant"]),
+  updateOwnerResponse
 );
 
 

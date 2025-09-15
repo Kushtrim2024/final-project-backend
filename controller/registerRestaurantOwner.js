@@ -127,12 +127,11 @@ export const loginRestaurantOwner = async (req, res) => {
 export const updateRestaurantOwnerProfile = async (req, res) => {
   try {
     const fieldsToUpdate = {};
-
     const allowedFields = [
       "name",
       "email",
       "phone",
-      "address",
+      "address",       // Objekt
       "restaurantName",
       "taxNumber",
       "document",
@@ -140,19 +139,38 @@ export const updateRestaurantOwnerProfile = async (req, res) => {
     ];
 
     allowedFields.forEach((field) => {
-      if (req.body[field] !== undefined && req.body[field].trim() !== "") {
-        fieldsToUpdate[field] = req.body[field];
+      const value = req.body[field];
+      if (value !== undefined) {
+        if (typeof value === "string") {
+          if (value.trim() !== "") {
+            fieldsToUpdate[field] = value;
+          }
+        } else {
+          // z.B. address (Objekt)
+          fieldsToUpdate[field] = value;
+        }
       }
     });
 
+    // Owner updaten
     const updatedOwner = await RestaurantOwner.findByIdAndUpdate(
       req.user._id,
       fieldsToUpdate,
       { new: true, runValidators: true }
     ).select("-password");
 
-    if (!updatedOwner)
+    if (!updatedOwner) {
       return res.status(404).json({ message: "Restaurant owner not found" });
+    }
+
+    // Wenn restaurantName geändert → auch Restaurant updaten
+    if (fieldsToUpdate.restaurantName) {
+      await Restaurant.findOneAndUpdate(
+        { ownerId: req.user._id },
+        { restaurantName: fieldsToUpdate.restaurantName },
+        { new: true, runValidators: true }
+      );
+    }
 
     res.status(200).json(updatedOwner);
   } catch (error) {

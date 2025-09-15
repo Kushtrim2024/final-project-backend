@@ -286,20 +286,28 @@ export const deleteMyRestaurant = async (req, res) => {
 
 export const getRatingsForOwner = async (req, res) => {
   try {
-    const ownerId = req.user._id; // ID des Restaurant-Owners aus JWT
+    const ownerId = req.user._id;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
 
     const restaurant = await Restaurant.findOne({ ownerId })
-      .populate("ratings.userId", "name email")
-      .select("ratings averageRating");
+      .select("ratings averageRating")
+      .populate("ratings.userId", "name email");
 
-    if (!restaurant) {
-      return res.status(404).json({ message: "Restaurant not found" });
-    }
+    if (!restaurant) return res.status(404).json({ message: "Restaurant not found" });
+
+    const totalRatings = restaurant.ratings.length;
+    const start = (page - 1) * limit;
+    const end = page * limit;
+
+    const ratingsPage = restaurant.ratings.slice(start, end);
 
     res.json({
       averageRating: restaurant.averageRating,
-      totalRatings: restaurant.ratings.length,
-      ratings: restaurant.ratings,
+      totalRatings,
+      page,
+      totalPages: Math.ceil(totalRatings / limit),
+      ratings: ratingsPage,
     });
   } catch (error) {
     console.error("Error fetching ratings:", error);
@@ -335,6 +343,32 @@ export const addOwnerResponse = async (req, res) => {
   }
 };
 
+//Update Owner Response
+export const updateOwnerResponse = async (req, res) => {
+  try {
+    const { response } = req.body;
+    const { ratingId } = req.params; 
+    const ownerId = req.user._id;
+
+    // Restaurant über ownerId finden
+    const restaurant = await Restaurant.findOne({ ownerId });
+    if (!restaurant) return res.status(404).json({ message: "Restaurant not found" });
+
+    const rating = restaurant.ratings.id(ratingId);
+    if (!rating || !rating.ownerResponse) {
+      return res.status(404).json({ message: "Owner response not found" });
+    }
+
+    rating.ownerResponse.text = response;
+    rating.ownerResponse.createdAt = new Date();
+
+    await restaurant.save();
+
+    res.status(200).json({ message: "Owner response updated", rating });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  } 
+};
 
 
 export const getRestaurantsByCategory = async (req, res) => {
