@@ -9,7 +9,7 @@ const OrderSchema = new mongoose.Schema(
     },
 
     // Liste aller beteiligten Restaurants
-    restaurants: [
+    restaurantId: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Restaurant",
@@ -27,33 +27,64 @@ const OrderSchema = new mongoose.Schema(
     },
 
     items: [
-  {
-    productId: { type: mongoose.Schema.Types.ObjectId, ref: "MenuItem", required: true },
-    restaurantId: { type: mongoose.Schema.Types.ObjectId, ref: "Restaurant", required: true }, // NEU
-    name: String,
-    quantity: Number,
-    price: Number,
-    total: Number,
-    size: String,
-    addOns: [mongoose.Schema.Types.ObjectId],
-  }
-],
+      {
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "MenuItem",
+          required: true,
+        },
+        restaurantId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Restaurant",
+          required: true,
+        }, // NEU
+        name: String,
+        quantity: Number,
+        price: Number,
+        total: Number,
+        size: String,
+        addOns: [mongoose.Schema.Types.ObjectId],
+      },
+    ],
 
     total: { type: Number, required: true, min: 0 },
 
-    deliveryType: { type: String, enum: ["delivery", "takeaway"], required: true },
+    deliveryType: {
+      type: String,
+      enum: ["delivery", "takeaway"],
+      required: true,
+    },
 
-    paymentMethod: { type: String, enum: ["card", "paypal", "applepay", "googlepay"], required: true },
+    paymentMethod: {
+      type: String,
+      enum: ["card", "paypal", "applepay", "googlepay"],
+      required: true,
+    },
     paymentDetails: {
-      cardType: { type: String, enum: ["visa", "mastercard", "maestro", "amex", "discover", "other"] },
+      cardType: {
+        type: String,
+        enum: ["visa", "mastercard", "maestro", "amex", "discover", "other"],
+      },
       last4: String,
       transactionId: String,
     },
-    paymentStatus: { type: String, enum: ["pending", "paid", "failed"], default: "pending" },
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "paid", "failed"],
+      default: "pending",
+    },
 
     status: {
       type: String,
-      enum: ["pending", "confirmed", "preparing", "ready", "out_for_delivery", "delivered", "cancelled"],
+      enum: [
+        "pending",
+        "confirmed",
+        "preparing",
+        "ready",
+        "out_for_delivery",
+        "delivered",
+        "cancelled",
+      ],
       default: "pending",
     },
 

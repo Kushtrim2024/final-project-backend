@@ -42,10 +42,11 @@ app.use(
 app.use("/restaurants", restaurantPublicRouter);
 
 // Eingelogte User kann Bewertung hinzufügen
-app.use("/restaurants", restaurantRouter)
+app.use("/restaurants", restaurantRouter);
 
 // Owner Router: Profil & Auth für RestaurantOwner
 app.use("/owner", restaurantOwnerRouter);
+app.use("/owner/restaurants/my-restaurant", restaurantOwnerRouter);
 
 // Menu-Router verschachtelt unter Restaurants
 app.use("/owner/restaurants/:restaurantId/menu-items", menuRouter);

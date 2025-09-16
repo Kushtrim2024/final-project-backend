@@ -1,10 +1,25 @@
 import express from "express";
-import { profile, registerUser, loginUser, updateUserProfile, updateUserPassword, deleteUserAccount, addAddress, removeAddress, getDefaultAddress, uploadProfilePicture, updateAddress } from "../controller/userController.js";
+import {
+  profile,
+  registerUser,
+  loginUser,
+  updateUserProfile,
+  updateUserPassword,
+  deleteUserAccount,
+  addAddress,
+  removeAddress,
+  getDefaultAddress,
+  uploadProfilePicture,
+  updateAddress,
+} from "../controller/userController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import upload from "../middleware/upload.js";
 
-
-
+import {
+  getPaymentMethods,
+  addPaymentMethod,
+  deletePaymentMethod,
+} from "../controller/userController.js";
 
 const router = express.Router();
 
@@ -15,17 +30,37 @@ router.post("/login", loginUser);
 // Profile
 router.get("/profile", authMiddleware(["user"]), profile);
 router.put("/profile/update", authMiddleware(["user"]), updateUserProfile);
-router.put("/profile/update-password", authMiddleware(["user"]), updateUserPassword);
+router.put(
+  "/profile/update-password",
+  authMiddleware(["user"]),
+  updateUserPassword
+);
 router.delete("/profile/delete", authMiddleware(["user"]), deleteUserAccount);
-
 
 // Profile image upload (NO multer here; express-fileupload is global)
 router.put("/profile/photo", authMiddleware(["user"]), uploadProfilePicture);
 
 // Addresses
 router.post("/profile/addresses", authMiddleware(["user"]), addAddress);
-router.get("/profile/addresses/default", authMiddleware(["user"]), getDefaultAddress);
-router.delete("/profile/addresses/:addressId", authMiddleware(["user"]), removeAddress);
-router.put("/profile/addresses/:addressId", authMiddleware, updateAddress);
 
+router.get(
+  "/profile/addresses/default",
+  authMiddleware(["user"]),
+  getDefaultAddress
+);
+router.delete(
+  "/profile/addresses/:addressId",
+  authMiddleware(["user"]),
+  removeAddress
+);
+router.put(
+  "/profile/addresses/:addressId",
+  authMiddleware(["user"]),
+  updateAddress
+);
+
+// 🟢 Payment routes
+router.get("/payment-methods", authMiddleware(["user"]), getPaymentMethods);
+router.post("/add-payment", authMiddleware(["user"]), addPaymentMethod);
+router.post("/delete-payment", authMiddleware(["user"]), deletePaymentMethod);
 export default router;

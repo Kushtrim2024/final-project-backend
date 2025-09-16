@@ -20,30 +20,43 @@ export const authMiddleware = (allowedRoles = []) => {
       const token = authHeader?.split(" ")[1];
 
       if (!token) {
-        return res.status(401).json({ message: "Access denied. No token provided." });
+        return res
+          .status(401)
+          .json({ message: "Access denied. No token provided." });
       }
 
       // Token prüfen
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const { id, role } = decoded;
 
-      if (!id || !role) {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const { id, _id, role } = decoded;
+      // 🟢 consol.log
+      //console.log("🔑 Decoded token payload:", decoded);
+
+      // 🔑 Sicherstellen, dass wir die richtige ID haben
+      const userId = id || _id;
+      // console.log("👉 Using userId:", userId, "Role:", role);
+
+      if (!userId || !role) {
         return res.status(400).json({ message: "Invalid token payload." });
       }
-
       // Rollenprüfung (nur wenn allowedRoles gesetzt ist)
       if (allowedRoles.length > 0 && !allowedRoles.includes(role)) {
-        return res.status(403).json({ message: "Access forbidden: insufficient permissions." });
+        return res
+          .status(403)
+          .json({ message: "Access forbidden: insufficient permissions." });
       }
 
       // Passendes Model holen
       const Model = roleModelMap[role];
       if (!Model) {
-        return res.status(400).json({ message: `No model found for role: ${role}` });
+        return res
+          .status(400)
+          .json({ message: `No model found for role: ${role}` });
       }
 
       // Benutzer aus der richtigen Collection holen
-      const user = await Model.findById(id).select("-password");
+      const user = await Model.findById(userId).select("-password");
+
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
