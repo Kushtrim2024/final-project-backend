@@ -33,11 +33,7 @@ app.use(express.json({ limit: "1mb" }));
 app.use(fileUpload({ useTempFiles: true }));
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:5517",
-      "https://liefrik.vercel.app",
-    ], // Frontend
+    origin: ["https://liefrik.vercel.app"], // Frontend
     credentials: true,
   })
 );
