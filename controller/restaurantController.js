@@ -2,22 +2,58 @@ import Restaurant from "../models/Restaurant.js";
 import { uploadBufferToCloudinary } from "../utils/cloudinaryUpload.js";
 
 // Get all restaurants
+// controller/restaurantController.js
+
 export const getAllRestaurants = async (req, res) => {
   try {
-    const restaurants = await Restaurant.find({})
-      .populate({
-        path: "ownerId",
-        match: { status: "active" },
-        select: "status",
-      })
-      .lean();
+    const { page = 1, limit = 9, q, cat, lat, lng, postcode } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
 
-    // sadece owner'ı match eden (yani aktif olan) restoranları bırak
-    const activeOnly = restaurants.filter((r) => !!r.ownerId);
+    let query = {};
 
-    res.status(200).json(activeOnly);
+    // 1. Arama Filtresi
+    if (q) query.restaurantName = { $regex: q, $options: "i" };
+    
+    // 2. Kategori Filtresi
+    if (cat && cat !== "All") query.categories = { $in: [cat] };
+
+    // 3. Posta Kodu Filtresi
+    if (postcode) query["address.postalCode"] = postcode;
+
+    // 4. Konum (Mesafe) Filtresi - En önemli kısım
+    if (lat && lng && lat !== "null" && lng !== "null") {
+      query.location = {
+        $near: {
+          $geometry: { 
+            type: "Point", 
+            coordinates: [parseFloat(lng), parseFloat(lat)] 
+          },
+          $maxDistance: 25000, // 25 KM çapında ara
+        },
+      };
+    }
+
+    // Veriyi ve Toplam Sayıyı Paralel Çek
+    const [total, restaurants] = await Promise.all([
+      Restaurant.countDocuments(query),
+      Restaurant.find(query)
+        .populate({ path: "ownerId", select: "status" })
+        .skip(skip)
+        .limit(parseInt(limit))
+        .lean()
+    ]);
+
+    // Sadece aktif restoranları filtrele
+    const activeData = restaurants.filter((r) => r.ownerId?.status === "active");
+
+    res.status(200).json({
+      data: activeData,
+      total: total, // Sayfalama için toplam sayı
+      page: parseInt(page),
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (error) {
-    console.error("Error fetching restaurants:", error);
+    console.error("Backend Hatası:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

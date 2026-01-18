@@ -20,6 +20,7 @@ const RestaurantSchema = new mongoose.Schema(
       ref: "RestaurantOwner",
       required: true,
     },
+    
   
 
     image: { type: String, trim: true },
